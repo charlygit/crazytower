@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">CrazyTower</string>
+
+    <string name="btnWifi">Activar Anclaje de red</string>
+    <string name="txtContenidoApp">Contenido de aplicación</string>
+
+    <string name="btnContadorDispositivos">Listar disp. conectados</string>
+</resources>
