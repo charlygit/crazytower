@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".CrazyTowerHome"
+    android:columnCount="2"
+    android:rowCount="10">
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editText"
+        android:layout_row="9"
+        android:layout_column="1"
+        android:text="@string/homescreenToqueParaIniciar"
+        android:layout_columnSpan="1"
+        android:clickable="true"
+        android:textAlignment="center" />
+</GridLayout>

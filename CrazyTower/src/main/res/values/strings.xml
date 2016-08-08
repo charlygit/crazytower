@@ -5,4 +5,7 @@
     <string name="txtContenidoApp">Contenido de aplicación</string>
 
     <string name="btnContadorDispositivos">Listar disp. conectados</string>
+
+    <!-- Pantalla principal -->
+    <string name="homescreenToqueParaIniciar">Presione la pantalla para comenzar</string>
 </resources>
