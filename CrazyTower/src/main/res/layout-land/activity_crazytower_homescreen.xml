@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    tools:context=".CrazyTowerHome"
-    android:columnCount="2"
-    android:rowCount="10">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CrazyTowerHome">
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"/>
+
+    <ImageSwitcher
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:id="@+id/imageSwitcher"
+        android:layout_weight="0.7"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
         android:id="@+id/editText"
-        android:layout_row="9"
-        android:layout_column="1"
         android:text="@string/homescreenToqueParaIniciar"
-        android:layout_columnSpan="1"
-        android:clickable="true"
-        android:textAlignment="center" />
-</GridLayout>
+        android:clickable="false"
+        android:textAlignment="center"
+        android:inputType="none"
+        android:linksClickable="false"
+        android:layout_weight="0.1"/>
+
+
+</LinearLayout>
