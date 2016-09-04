@@ -3,11 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".encuesta.ActividadEncuesta">
+    tools:context=".encuesta.ActividadEncuesta"
+    android:orientation="vertical">
 
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0px"
+        android:layout_weight="0.9"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:id="@+id/progressBar"
+        android:layout_gravity="bottom"
+        android:layout_weight="0.1"
+        android:theme="@android:style/Widget.ProgressBar.Horizontal" />
 </LinearLayout>
