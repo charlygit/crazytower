@@ -6,19 +6,53 @@
     tools:context=".encuesta.ActividadEncuesta"
     android:orientation="vertical">
 
-    <android.support.v4.view.ViewPager
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pager"
+    <!-- botones adelante, atras y pantalla principal -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:layout_weight="0.9"/>
+        android:layout_weight="0.9">
 
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/encuestaBotonAtras"
+                android:id="@+id/botonAtras"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1" />
+
+            <android.support.v4.view.ViewPager
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/pager"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"/>
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/encuestaBotonAdelante"
+                android:id="@+id/botonAdelante"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="0.1" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- progress bar -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:id="@+id/progressBar"
-        android:layout_gravity="bottom"
-        android:layout_weight="0.1"
-        android:theme="@android:style/Widget.ProgressBar.Horizontal" />
+        android:layout_weight="0.1">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/progressBar"
+            android:layout_gravity="bottom" />
+    </FrameLayout>
 </LinearLayout>

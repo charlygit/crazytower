@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import software.cm.crazytower.R;
 
-public class FragmentoImagenSlider extends Fragment {
+public class FragmentoImagenSlider extends FragmentoEncuesta {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(

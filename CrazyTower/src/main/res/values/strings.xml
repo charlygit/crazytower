@@ -8,4 +8,9 @@
 
     <!-- Pantalla principal -->
     <string name="homescreenToqueParaIniciar">Presione la pantalla para comenzar</string>
+
+    <!-- Encuenta -->
+    <string name="encuestaBotonAdelante">&gt;</string>
+    <string name="encuestaBotonAtras">&lt;</string>
+
 </resources>

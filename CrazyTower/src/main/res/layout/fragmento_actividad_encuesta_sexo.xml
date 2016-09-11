@@ -1,0 +1,117 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Marca el grupo que te identifica:"
+            android:id="@+id/textView"
+            android:textAlignment="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.9">
+
+        <!-- BOTONES IZQUIERDA -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:text="New ToggleButton"
+                android:id="@+id/sexoM12_30"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"
+                android:textOff="12 - 30 años"
+                android:textOn="12 - 30 años" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:text="New ToggleButton"
+                android:id="@+id/sexoM30_45"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"
+                android:textOff="31 - 45 años"
+                android:textOn="31 - 45 años" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:text="New ToggleButton"
+                android:id="@+id/sexoM45"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"
+                android:textOff="+ 45 años"
+                android:textOn="+ 45 años" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+
+        <!-- BOTONES DERECHA -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+    </LinearLayout>
+</LinearLayout>
