@@ -1,4 +1,4 @@
-package software.cm.crazytower.encuesta;
+package software.cm.crazytower.actividades.encuesta;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,9 +13,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import software.cm.crazytower.R;
-import software.cm.crazytower.componentes.fragmentos.FragmentoEncuesta;
-import software.cm.crazytower.componentes.fragmentos.FragmentoEncuestaSexo;
-import software.cm.crazytower.componentes.fragmentos.FragmentoImagenSlider;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaSexo;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
 
 public class ActividadEncuesta extends FragmentActivity {
     private static final int CANT_PAGINAS = 5;
@@ -86,7 +88,44 @@ public class ActividadEncuesta extends FragmentActivity {
             FragmentoEncuesta fragmento;
 
             if (position == 0) {
+                fragmento = new FragmentoEncuestaInicio();
+            } else if (position == 1) {
                 fragmento = new FragmentoEncuestaSexo();
+            } else if (position == 2) {
+                fragmento = new FragmentoEncuestaOpcionesDinamicas();
+
+                Bundle argumentos = new Bundle();
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 3);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Cada cuánto haces ejercicio?");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "1-2 veces al mes");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "1-2 veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "3 o más veces por semana");
+
+                fragmento.setArguments(argumentos);
+            } else if (position == 3) {
+                fragmento = new FragmentoEncuestaOpcionesDinamicas();
+
+                Bundle argumentos = new Bundle();
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 4);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Qué tipo de actividad prefieres?");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Caminar, correr");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "Gimnasia o aparatos");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "Yoga, Pilates, etc.");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Fútbol, básquetbol, etc.");
+
+                fragmento.setArguments(argumentos);
+            } else if (position == 4) {
+                fragmento = new FragmentoEncuestaOpcionesDinamicas();
+
+                Bundle argumentos = new Bundle();
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 4);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Cuánto pagarías por un par de calzados deportivos");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Hasta $1.000");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "$2.000 a $3.500");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "$1.000 a $2.000");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Más de $3.500");
+
+                fragmento.setArguments(argumentos);
             } else {
                 fragmento = new FragmentoImagenSlider();
 

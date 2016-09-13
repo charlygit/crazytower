@@ -1,4 +1,4 @@
-package software.cm.crazytower;
+package software.cm.crazytower.actividades;
 
 import android.annotation.SuppressLint;
 import android.content.ComponentName;
@@ -23,6 +23,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import software.cm.crazytower.R;
 import software.cm.crazytower.componentes.AdaptardorArreglo;
 import software.cm.crazytower.componentes.ListaNodosReceptor;
 import software.cm.crazytower.componentes.Receptor;

@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textoFragmento"
+        android:padding="16dp"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Te mantenemos conectad@" />
+
+    <TextView
+        android:id="@+id/textoFragmento2"
+        android:padding="16dp"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carga tu celular gratis"
+        android:layout_marginLeft="50dp"/>
+
+    <TextView
+        android:id="@+id/textoFragmento3"
+        android:padding="16dp"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Wi-fi gratis"
+        android:layout_marginLeft="50dp"/>
+
+    <TextView
+        android:id="@+id/textoFragmento4"
+        android:padding="16dp"
+        android:lineSpacingMultiplier="1.2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Por favor contesta unas preguntas para comenzar..." />
+
+</LinearLayout>

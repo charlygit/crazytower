@@ -1,4 +1,4 @@
-package software.cm.crazytower;
+package software.cm.crazytower.actividades;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,8 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
-import software.cm.crazytower.encuesta.ActividadEncuesta;
+import software.cm.crazytower.R;
+import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
 
 public class CrazyTowerHome extends Activity {
     // Variables de control del visor de propagandas
