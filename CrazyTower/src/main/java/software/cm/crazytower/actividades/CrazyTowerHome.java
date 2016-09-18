@@ -2,7 +2,11 @@ package software.cm.crazytower.actividades;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,13 +17,15 @@ import android.widget.ViewSwitcher;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
+import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
 public class CrazyTowerHome extends Activity {
     // Variables de control del visor de propagandas
     private int nroImagen;
     private ImageSwitcher imageSwitcher;
     private static final Integer DURACION_IMAGEN_MS = 8000;
-    private int[] gallery = {R.drawable.a, R.drawable.b, R.drawable.c};
+    private int[] gallery = {R.drawable.nike, R.drawable.adidas, R.drawable.puma, R.drawable.reebok};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +35,9 @@ public class CrazyTowerHome extends Activity {
 
         // Iniciar el visor de propagandas
         this.iniciarImageSwitcher();
+
+        // Inicia el servicio de monitoreo de conexiones
+        this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
     }
 
     @Override
@@ -38,6 +47,20 @@ public class CrazyTowerHome extends Activity {
         CrazyTowerHome.this.finish();
 
         return super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!Settings.System.canWrite(CrazyTowerHome.this)) {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + CrazyTowerHome.this.getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        }
     }
 
     // ----------
@@ -63,7 +86,7 @@ public class CrazyTowerHome extends Activity {
                 }
                 imageSwitcher.postDelayed(this, DURACION_IMAGEN_MS);
             }
-        }, DURACION_IMAGEN_MS);
+        }, 0);
 
         // Se definen las animaciones de entrada y de salida de las imagenes
         Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);

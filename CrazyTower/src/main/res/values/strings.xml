@@ -12,5 +12,6 @@
     <!-- Encuenta -->
     <string name="encuestaBotonAdelante">&gt;</string>
     <string name="encuestaBotonAtras">&lt;</string>
+    <string name="title_activity_actividad_servicios">ActividadServicios</string>
 
 </resources>

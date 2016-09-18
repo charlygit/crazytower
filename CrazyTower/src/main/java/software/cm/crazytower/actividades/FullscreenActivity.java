@@ -155,7 +155,7 @@ public class FullscreenActivity extends AppCompatActivity implements Receptor {
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (Settings.System.canWrite(FullscreenActivity.this)) {
-                            APManager.setWifiApState(FullscreenActivity.this, true);
+                            APManager.setWifiApState(FullscreenActivity.this);
                             Log.i("AP Status", "" + APManager.getWifiApConfiguration().status);
                         } else {
                             FullscreenActivity.this.debeIniciarAnclajeRed = true;
@@ -225,11 +225,11 @@ public class FullscreenActivity extends AppCompatActivity implements Receptor {
             this.servicioConexion = new ServiceConnection() {
                 @Override
                 public void onServiceConnected(ComponentName className, IBinder service) {
-                    ServicioMonitoreoConexiones.LocalBinder binder = (ServicioMonitoreoConexiones.LocalBinder) service;
+                    /*ServicioMonitoreoConexiones.LocalBinder binder = (ServicioMonitoreoConexiones.LocalBinder) service;
                     FullscreenActivity.this.servicio = binder.obtenerServicio();
                     FullscreenActivity.this.servicioBound = true;
 
-                    FullscreenActivity.this.servicio.iniciarProceso();
+                    FullscreenActivity.this.servicio.iniciarProceso();*/
                 }
 
                 @Override
@@ -259,7 +259,7 @@ public class FullscreenActivity extends AppCompatActivity implements Receptor {
         super.onResume();
 
         if (this.debeIniciarAnclajeRed) {
-            APManager.setWifiApState(FullscreenActivity.this, true);
+            APManager.setWifiApState(FullscreenActivity.this);
             FullscreenActivity.this.debeIniciarAnclajeRed = false;
         }
 

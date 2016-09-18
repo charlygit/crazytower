@@ -10,7 +10,8 @@
         android:lineSpacingMultiplier="1.2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Te mantenemos conectad@" />
+        android:text="Te mantenemos conectad@"
+        android:textSize="20dp"/>
 
     <TextView
         android:id="@+id/textoFragmento2"
@@ -19,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Carga tu celular gratis"
-        android:layout_marginLeft="50dp"/>
+        android:layout_marginLeft="50dp"
+        android:textSize="20dp"/>
 
     <TextView
         android:id="@+id/textoFragmento3"
@@ -28,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Wi-fi gratis"
-        android:layout_marginLeft="50dp"/>
+        android:layout_marginLeft="50dp"
+        android:textSize="20dp"/>
 
     <TextView
         android:id="@+id/textoFragmento4"
@@ -36,6 +39,7 @@
         android:lineSpacingMultiplier="1.2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Por favor contesta unas preguntas para comenzar..." />
+        android:text="Por favor contesta unas preguntas para comenzar..."
+        android:textSize="20dp"/>
 
 </LinearLayout>

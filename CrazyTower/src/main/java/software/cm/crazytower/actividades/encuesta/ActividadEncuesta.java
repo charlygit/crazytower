@@ -1,5 +1,6 @@
 package software.cm.crazytower.actividades.encuesta;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import software.cm.crazytower.R;
+import software.cm.crazytower.actividades.ActividadServicios;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaSexo;
@@ -153,6 +155,11 @@ public class ActividadEncuesta extends FragmentActivity {
             public void onClick(View v) {
                 if (mPaginador.getCurrentItem() < (CANT_PAGINAS - 1)) {
                     mPaginador.setCurrentItem(mPaginador.getCurrentItem() + 1);
+                } else {
+                    // Se finaliza la accion de encuesta y se pasa a la accion que brinda servicios
+                    Intent mainIntent = new Intent(ActividadEncuesta.this, ActividadServicios.class);
+                    ActividadEncuesta.this.startActivity(mainIntent);
+                    ActividadEncuesta.this.finish();
                 }
             }
         });
@@ -168,12 +175,6 @@ public class ActividadEncuesta extends FragmentActivity {
     }
 
     private void configurarVisibilidadBotones(int position) {
-        if (position == CANT_PAGINAS - 1) {
-            botonAdelante.setVisibility(View.INVISIBLE);
-        } else {
-            botonAdelante.setVisibility(View.VISIBLE);
-        }
-
         if (position == 0) {
             botonAtras.setVisibility(View.INVISIBLE);
         } else {

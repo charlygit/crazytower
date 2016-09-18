@@ -7,28 +7,56 @@ import android.net.wifi.WifiManager;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import software.cm.crazytower.modelo.Nodo;
 
 public class APManager {
-    private static final String SSID = "1234567890abcdef";
-    private static final String SSID_PASS = "12345678";
+    private static final String SSID = "wifiEncarga";
+    private static String SSID_PASS = "12345678";
 
-    public static boolean setWifiApState(Context context, boolean enabled) {
-        //config = Preconditions.checkNotNull(config);
+    public static void recrearContrasenia(Context context) {
+        // Se modifica la contraseña
+        SSID_PASS = UUID.randomUUID().toString().substring(0, 8);
+
+        // Se inicia nuevamente el anclaje de red con la nueva contraseña
+        setWifiApState(context);
+    }
+
+    public static String obtenerContrasenia() {
+        return SSID_PASS;
+    }
+
+    public static boolean setWifiApState(Context context) {
         try {
             WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            if (enabled) {
+
+            if (mWifiManager.isWifiEnabled()) {
                 mWifiManager.setWifiEnabled(false);
             }
+
             WifiConfiguration conf = getWifiApConfiguration();
             mWifiManager.addNetwork(conf);
 
-            return (Boolean) mWifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class).invoke(mWifiManager, conf, enabled);
+            return (Boolean) mWifiManager.getClass().getMethod("setWifiApEnabled", WifiConfiguration.class, boolean.class).invoke(mWifiManager, conf, true);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean estaAnclajeRedActivo(Context context) {
+        try {
+            WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+
+            return (Boolean) mWifiManager.getClass().getMethod("isWifiApEnabled").invoke(mWifiManager);
+        } catch (Exception e) {
+            e.printStackTrace();
+
             return false;
         }
     }

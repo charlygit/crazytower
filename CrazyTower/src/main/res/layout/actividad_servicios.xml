@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".actividades.ActividadServicios"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/textoFragmento"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"
+        android:text="Muchas gracias!"
+        android:textSize="30dp"
+        android:layout_marginLeft="20dp"/>
+
+    <TextView
+        android:id="@+id/textoFragmento2"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"
+        android:text="Elige dónde vas a cargar tu celular"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"/>
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="0.7"/>
+
+    <TextView
+        android:id="@+id/idMensajeClaveWifi"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"
+        android:layout_marginLeft="20dp"
+        android:textSize="20dp"
+        android:text="Utiliza la wi-fi encarga con la clave..." />
+</LinearLayout>
