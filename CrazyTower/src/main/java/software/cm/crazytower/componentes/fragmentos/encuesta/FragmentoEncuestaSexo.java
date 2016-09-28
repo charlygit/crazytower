@@ -55,6 +55,8 @@ public class FragmentoEncuestaSexo extends FragmentoEncuesta {
                 botonSexoF12A30.setChecked(buttonView == botonSexoF12A30);
                 botonSexoF3045.setChecked(buttonView == botonSexoF3045);
                 botonSexoF45Mas.setChecked(buttonView == botonSexoF45Mas);
+
+                FragmentoEncuestaSexo.this.enviarAccionBotonApretado(buttonView);
             }
         }
     };

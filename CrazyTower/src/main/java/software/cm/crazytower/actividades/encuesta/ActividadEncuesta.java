@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -21,7 +23,7 @@ import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaS
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
 
-public class ActividadEncuesta extends FragmentActivity {
+public class ActividadEncuesta extends FragmentActivity implements FragmentoEncuestaOpcionListener {
     private static final int CANT_PAGINAS = 5;
     private ViewPager mPaginador;
     private PagerAdapter mPaginadorAdapter;
@@ -63,6 +65,12 @@ public class ActividadEncuesta extends FragmentActivity {
             this.mPaginador.setCurrentItem(mPaginador.getCurrentItem() - 1);
         }
     }
+
+    @Override
+    public void ejecutarSeleccionOpcion(Button botonApretado) {
+        mPaginador.setCurrentItem(mPaginador.getCurrentItem() + 1);
+    }
+
 
     private class EncuestaOnPageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
@@ -136,6 +144,9 @@ public class ActividadEncuesta extends FragmentActivity {
                 fragmento.setArguments(bundle);
             }
 
+            // Se define el listener del fragmento, para capturar los touch en los botones
+            fragmento.setFragmentoEncuestaOpcionListener(ActividadEncuesta.this);
+
             return fragmento;
         }
 
@@ -147,6 +158,7 @@ public class ActividadEncuesta extends FragmentActivity {
 
     private void configurarBotonesAdelanteYAtras() {
         this.botonAdelante = (Button) findViewById(R.id.botonAdelante);
+
         this.botonAtras = (Button) findViewById(R.id.botonAtras);
         this.botonAtras.setVisibility(View.INVISIBLE);
 
@@ -177,8 +189,10 @@ public class ActividadEncuesta extends FragmentActivity {
     private void configurarVisibilidadBotones(int position) {
         if (position == 0) {
             botonAtras.setVisibility(View.INVISIBLE);
+            botonAdelante.setVisibility(View.VISIBLE);
         } else {
             botonAtras.setVisibility(View.VISIBLE);
+            botonAdelante.setVisibility(View.INVISIBLE);
         }
     }
 }

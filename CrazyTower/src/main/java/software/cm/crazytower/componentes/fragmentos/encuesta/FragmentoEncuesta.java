@@ -1,6 +1,9 @@
 package software.cm.crazytower.componentes.fragmentos.encuesta;
 
 import android.support.v4.app.Fragment;
+import android.widget.Button;
+
+import software.cm.crazytower.actividades.encuesta.FragmentoEncuestaOpcionListener;
 
 public abstract class FragmentoEncuesta extends Fragment  {
     private static final int CANT_MAX_OPCIONES = 8;
@@ -9,14 +12,7 @@ public abstract class FragmentoEncuesta extends Fragment  {
     private static final String PARAMETRO_CANT_OPCIONES = "paramCantOpciones";
     private static final String PARAMETRO_OPCION_PREFIJO = "paramOpcion";
 
-    /*public static final String PARAMETRO_OPCION_1 = "paramOpcion1";
-    public static final String PARAMETRO_OPCION_2 = "paramOpcion2";
-    public static final String PARAMETRO_OPCION_3 = "paramOpcion3";
-    public static final String PARAMETRO_OPCION_4 = "paramOpcion4";
-    public static final String PARAMETRO_OPCION_5 = "paramOpcion5";
-    public static final String PARAMETRO_OPCION_6 = "paramOpcion6";
-    public static final String PARAMETRO_OPCION_7 = "paramOpcion7";
-    public static final String PARAMETRO_OPCION_8 = "paramOpcion8";*/
+    protected FragmentoEncuestaOpcionListener fragmentoEncuestaOpcionListener;
 
     protected String obtenerTitulo() {
         return this.getArguments().getString(PARAMETRO_TITULO);
@@ -44,5 +40,20 @@ public abstract class FragmentoEncuesta extends Fragment  {
 
     public static String getNombreParametroOpcion(int nroOpcion) {
         return PARAMETRO_OPCION_PREFIJO + nroOpcion;
+    }
+
+    public FragmentoEncuestaOpcionListener getFragmentoEncuestaOpcionListener() {
+        return fragmentoEncuestaOpcionListener;
+    }
+
+    public FragmentoEncuesta setFragmentoEncuestaOpcionListener(FragmentoEncuestaOpcionListener fragmentoEncuestaOpcionListener) {
+        this.fragmentoEncuestaOpcionListener = fragmentoEncuestaOpcionListener;
+        return this;
+    }
+
+    public void enviarAccionBotonApretado(Button botonApretado) {
+        if (this.fragmentoEncuestaOpcionListener != null) {
+            this.fragmentoEncuestaOpcionListener.ejecutarSeleccionOpcion(botonApretado);
+        }
     }
 }

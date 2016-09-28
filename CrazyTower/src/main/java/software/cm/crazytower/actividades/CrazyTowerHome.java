@@ -1,7 +1,10 @@
 package software.cm.crazytower.actividades;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +18,15 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
+import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.helpers.Constantes;
+import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
 public class CrazyTowerHome extends Activity {
@@ -26,6 +35,7 @@ public class CrazyTowerHome extends Activity {
     private ImageSwitcher imageSwitcher;
     private static final Integer DURACION_IMAGEN_MS = 8000;
     private int[] gallery = {R.drawable.nike, R.drawable.adidas, R.drawable.puma, R.drawable.reebok};
+    private List<Bitmap> imagenes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,28 @@ public class CrazyTowerHome extends Activity {
 
         // Inicia el servicio de monitoreo de conexiones
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
+
+        this.imagenes = new ArrayList<>();
+        Bitmap bitmap;
+
+        for (int i=0; i < 3; i++) {
+            bitmap = this.cargarImagen(i);
+
+            if (bitmap != null) {
+                this.imagenes.add(bitmap);
+            }
+        }
+    }
+
+    private Bitmap cargarImagen(int nroImagen) {
+        try {
+            String nombreArchivo = String.format("%s_%s", Constantes.PREFIJO_NOMBRE_ARCHIVO_IMAGEN_HOME, nroImagen);
+            return (UtilidadesArchivo.cargarArchivo(CrazyTowerHome.this, nombreArchivo));
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Log.e(CrazyTowerSplash.class.getSimpleName(), excepcionGeneral.getMessage());
+
+            return null;
+        }
     }
 
     @Override
@@ -79,9 +111,10 @@ public class CrazyTowerHome extends Activity {
 
         this.imageSwitcher.postDelayed(new Runnable() {
             public void run() {
-                imageSwitcher.setImageResource(gallery[nroImagen++]);
+                //imageSwitcher.setImageResource(gallery[nroImagen++]);
+                imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), CrazyTowerHome.this.imagenes.get(nroImagen++)));
 
-                if (nroImagen == gallery.length) {
+                if (nroImagen == CrazyTowerHome.this.imagenes.size()) {
                     nroImagen = 0;
                 }
                 imageSwitcher.postDelayed(this, DURACION_IMAGEN_MS);

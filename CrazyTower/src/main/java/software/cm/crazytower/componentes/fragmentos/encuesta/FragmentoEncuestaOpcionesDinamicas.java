@@ -50,6 +50,7 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         for (int nroOpcion = 1; nroOpcion <= cantOpciones; nroOpcion++) {
             botonOpcion = (ToggleButton) rootView.findViewById(mapNroOpcionBotonCorrespondiente.get(nroOpcion));
             botonOpcion.setOnCheckedChangeListener(checkBotonListener);
+
             botonOpcion.setText(this.obtenerOpcion(nroOpcion));
             botonOpcion.setTextOn(this.obtenerOpcion(nroOpcion));
             botonOpcion.setTextOff(this.obtenerOpcion(nroOpcion));
@@ -64,6 +65,8 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked){
+                FragmentoEncuestaOpcionesDinamicas.this.enviarAccionBotonApretado(buttonView);
+
                 for (ToggleButton boton : FragmentoEncuestaOpcionesDinamicas.this.listaOpciones) {
                     boton.setChecked(boton == buttonView);
                 }
