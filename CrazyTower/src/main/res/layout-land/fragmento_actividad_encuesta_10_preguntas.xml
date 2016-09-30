@@ -1,0 +1,262 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Pregunta"
+            android:id="@+id/paginaEncuestaPregunta"
+            android:textAlignment="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.9">
+
+        <!-- ESPACIO IZQUIERDA -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="0.1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Mujer"
+                android:id="@+id/categoriaMujer"
+                android:textAlignment="center" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion1"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 1"
+                android:textOn="opcion 1" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion2"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 2"
+                android:textOn="opcion 2" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion3"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 3"
+                android:textOn="opcion 3" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion4"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 4"
+                android:textOn="opcion 4" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion5"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 5"
+                android:textOn="opcion 5" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+        </LinearLayout>
+
+        <!-- ESPACIO CENTRO -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.2"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_weight="0.1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Hombre"
+                android:id="@+id/categoriaHombre"
+                android:textAlignment="center" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion6"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 6"
+                android:textOn="opcion 6" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion7"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 7"
+                android:textOn="opcion 7" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion8"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 8"
+                android:textOn="opcion 8" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion9"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 9"
+                android:textOn="opcion 9" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion10"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_redondeado_hombre"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"
+                android:textOff="opcion 10"
+                android:textOn="opcion 10" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
+        </LinearLayout>
+
+        <!-- ESPACIO DERECHA -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+    </LinearLayout>
+</LinearLayout>

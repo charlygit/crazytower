@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import java.util.List;
+
 import software.cm.crazytower.R;
 
 public class FragmentoEncuestaSexo extends FragmentoEncuesta {
@@ -60,4 +62,9 @@ public class FragmentoEncuestaSexo extends FragmentoEncuesta {
             }
         }
     };
+
+    @Override
+    protected List<ToggleButton> obtenerOpciones() {
+        return null;
+    }
 }

@@ -9,12 +9,16 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import software.cm.crazytower.R;
 
 public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
+    private enum AccionListener {AGREGAR, QUITAR};
+
     private static Map<Integer, Integer> mapCantOpcionesFragmentoLayout;
     private static Map<Integer, Integer> mapNroOpcionBotonCorrespondiente;
     private LinkedList<ToggleButton> listaOpciones;
@@ -35,7 +39,7 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Integer cantOpciones = this.obtenerCantOpciones();
+        int cantOpciones = this.obtenerCantOpciones();
 
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 mapCantOpcionesFragmentoLayout.get(cantOpciones), container, false);
@@ -49,7 +53,7 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
 
         for (int nroOpcion = 1; nroOpcion <= cantOpciones; nroOpcion++) {
             botonOpcion = (ToggleButton) rootView.findViewById(mapNroOpcionBotonCorrespondiente.get(nroOpcion));
-            botonOpcion.setOnCheckedChangeListener(checkBotonListener);
+            botonOpcion.setOnCheckedChangeListener(checkGeneralBotonListener);
 
             botonOpcion.setText(this.obtenerOpcion(nroOpcion));
             botonOpcion.setTextOn(this.obtenerOpcion(nroOpcion));
@@ -61,16 +65,8 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         return rootView;
     }
 
-    CompoundButton.OnCheckedChangeListener checkBotonListener = new CompoundButton.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if (isChecked){
-                FragmentoEncuestaOpcionesDinamicas.this.enviarAccionBotonApretado(buttonView);
-
-                for (ToggleButton boton : FragmentoEncuestaOpcionesDinamicas.this.listaOpciones) {
-                    boton.setChecked(boton == buttonView);
-                }
-            }
-        }
-    };
+    @Override
+    protected List<ToggleButton> obtenerOpciones() {
+        return this.listaOpciones;
+    }
 }

@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import java.util.List;
 
 import software.cm.crazytower.R;
 
@@ -19,5 +22,10 @@ public class FragmentoImagenSlider extends FragmentoEncuesta {
 
         textoFragmento.setText("Pagina " + this.getArguments().getInt("nroPagina"));
         return rootView;
+    }
+
+    @Override
+    protected List<ToggleButton> obtenerOpciones() {
+        return null;
     }
 }

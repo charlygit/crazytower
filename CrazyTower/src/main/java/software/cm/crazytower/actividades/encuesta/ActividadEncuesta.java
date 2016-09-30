@@ -27,7 +27,7 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
     private static final int CANT_PAGINAS = 5;
     private ViewPager mPaginador;
     private PagerAdapter mPaginadorAdapter;
-
+    private int maximaPaginaVisitada;
     private ProgressBar mProgressBar;
 
     // Botones adelante y atras
@@ -41,8 +41,10 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
         this.mPaginador = (ViewPager) findViewById(R.id.pager);
         this.mPaginador.addOnPageChangeListener(new EncuestaOnPageChangeListener());
+        this.mPaginador.setOffscreenPageLimit(10);
         this.mPaginadorAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         this.mPaginador.setAdapter(mPaginadorAdapter);
+        this.mPaginador.beginFakeDrag();
 
         this.mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         this.mProgressBar.setScaleY(3f);
@@ -52,6 +54,8 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
         // Configura los botones para ir hacia adelante y hacia atras
         this.configurarBotonesAdelanteYAtras();
+
+        this.maximaPaginaVisitada = 0;
     }
 
     @Override
@@ -79,6 +83,10 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
         @Override
         public void onPageSelected(int position) {
+            if (position > ActividadEncuesta.this.maximaPaginaVisitada) {
+                ActividadEncuesta.this.maximaPaginaVisitada = position;
+            }
+
             ActividadEncuesta.this.configurarVisibilidadBotones(position);
             ActividadEncuesta.this.mProgressBar.setProgress(position);
         }
@@ -100,7 +108,23 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
             if (position == 0) {
                 fragmento = new FragmentoEncuestaInicio();
             } else if (position == 1) {
-                fragmento = new FragmentoEncuestaSexo();
+                fragmento = new FragmentoEncuestaOpcionesDinamicas();
+
+                Bundle argumentos = new Bundle();
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 10);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "Marca el grupo que te identifica");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Hasta 18 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "19 - 25 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "3 o más veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "1-2 veces al mes");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(5), "1-2 veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(6), "3 o más veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(7), "1-2 veces al mes");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(8), "1-2 veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(9), "3 o más veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(10), "3 o más veces por semana");
+
+                fragmento.setArguments(argumentos);
             } else if (position == 2) {
                 fragmento = new FragmentoEncuestaOpcionesDinamicas();
 
@@ -192,7 +216,7 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
             botonAdelante.setVisibility(View.VISIBLE);
         } else {
             botonAtras.setVisibility(View.VISIBLE);
-            botonAdelante.setVisibility(View.INVISIBLE);
+            botonAdelante.setVisibility(position < this.maximaPaginaVisitada? View.VISIBLE : View.INVISIBLE);
         }
     }
 }
