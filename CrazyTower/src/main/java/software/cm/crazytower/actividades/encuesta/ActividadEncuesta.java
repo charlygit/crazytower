@@ -1,16 +1,13 @@
 package software.cm.crazytower.actividades.encuesta;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -19,9 +16,8 @@ import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.ActividadServicios;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
-import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaSexo;
-import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
 
 public class ActividadEncuesta extends FragmentActivity implements FragmentoEncuestaOpcionListener {
     private static final int CANT_PAGINAS = 5;
@@ -47,9 +43,11 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         this.mPaginador.beginFakeDrag();
 
         this.mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        this.mProgressBar.setScaleY(3f);
-        this.mProgressBar.getProgressDrawable().setColorFilter(
-                Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);
+        //this.mProgressBar.setScaleY(2f);
+
+        /*this.mProgressBar.getProgressDrawable().setColorFilter(
+                Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);*/
+
         this.mProgressBar.setMax(CANT_PAGINAS);
 
         // Configura los botones para ir hacia adelante y hacia atras
@@ -72,7 +70,14 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
     @Override
     public void ejecutarSeleccionOpcion(Button botonApretado) {
-        mPaginador.setCurrentItem(mPaginador.getCurrentItem() + 1);
+        if (this.mPaginador.getCurrentItem() < (CANT_PAGINAS - 1)) {
+            this.mPaginador.setCurrentItem(this.mPaginador.getCurrentItem() + 1);
+        } else {
+            // Se finaliza la accion de encuesta y se pasa a la accion que brinda servicios
+            Intent mainIntent = new Intent(ActividadEncuesta.this, ActividadServicios.class);
+            ActividadEncuesta.this.startActivity(mainIntent);
+            ActividadEncuesta.this.finish();
+        }
     }
 
 
@@ -115,37 +120,39 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
                 argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "Marca el grupo que te identifica");
                 argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Hasta 18 años");
                 argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "19 - 25 años");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "3 o más veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "1-2 veces al mes");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(5), "1-2 veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(6), "3 o más veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(7), "1-2 veces al mes");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(8), "1-2 veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(9), "3 o más veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(10), "3 o más veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "26 - 35 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "36 - 45 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(5), "más de 45 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(6), "Hasta 18 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(7), "19 - 25 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(8), "26 - 35 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(9), "36 - 45 años");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(10), "más de 45 años");
 
                 fragmento.setArguments(argumentos);
             } else if (position == 2) {
                 fragmento = new FragmentoEncuestaOpcionesDinamicas();
 
                 Bundle argumentos = new Bundle();
-                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 3);
-                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Cada cuánto haces ejercicio?");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "1-2 veces al mes");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "1-2 veces por semana");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "3 o más veces por semana");
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 4);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Con qué frecuencia realizas ejercicio?");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "1 vez por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "2 veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "3 veces por semana");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Todos los días");
 
                 fragmento.setArguments(argumentos);
             } else if (position == 3) {
                 fragmento = new FragmentoEncuestaOpcionesDinamicas();
 
                 Bundle argumentos = new Bundle();
-                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 4);
-                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Qué tipo de actividad prefieres?");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Caminar, correr");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "Gimnasia o aparatos");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "Yoga, Pilates, etc.");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Fútbol, básquetbol, etc.");
+                argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 5);
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Qué tipo de actividad preferís?");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Caminar o correr");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "Aérobica o pesas");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "Fútbol");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Bicicleta");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(5), "Otros");
 
                 fragmento.setArguments(argumentos);
             } else if (position == 4) {
@@ -153,11 +160,11 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
                 Bundle argumentos = new Bundle();
                 argumentos.putInt(FragmentoEncuesta.getNombreParametroCantOpciones(), 4);
-                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Cuánto pagarías por un par de calzados deportivos");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Hasta $1.000");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "$2.000 a $3.500");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "$1.000 a $2.000");
-                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Más de $3.500");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroTitulo(), "¿Qué tipo de calzado deportivo preferís");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(1), "Adidas");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(2), "Nike");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(3), "Puma");
+                argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Saucony");
 
                 fragmento.setArguments(argumentos);
             } else {
@@ -189,14 +196,16 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         this.botonAdelante.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mPaginador.getCurrentItem() < (CANT_PAGINAS - 1)) {
+                mPaginador.setCurrentItem(mPaginador.getCurrentItem() + 1);
+
+                /*if (mPaginador.getCurrentItem() < (CANT_PAGINAS - 1)) {
                     mPaginador.setCurrentItem(mPaginador.getCurrentItem() + 1);
                 } else {
                     // Se finaliza la accion de encuesta y se pasa a la accion que brinda servicios
                     Intent mainIntent = new Intent(ActividadEncuesta.this, ActividadServicios.class);
                     ActividadEncuesta.this.startActivity(mainIntent);
                     ActividadEncuesta.this.finish();
-                }
+                }*/
             }
         });
 

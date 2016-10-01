@@ -28,6 +28,8 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         mapCantOpcionesFragmentoLayout = new HashMap<>();
         mapCantOpcionesFragmentoLayout.put(3, R.layout.fragmento_actividad_encuesta_3_preguntas);
         mapCantOpcionesFragmentoLayout.put(4, R.layout.fragmento_actividad_encuesta_4_preguntas);
+        mapCantOpcionesFragmentoLayout.put(5, R.layout.fragmento_actividad_encuesta_5_preguntas);
+        mapCantOpcionesFragmentoLayout.put(10, R.layout.fragmento_actividad_encuesta_10_preguntas);
 
         // Inicializa el map con el boton correspondiente a cada nro. de opcion
         mapNroOpcionBotonCorrespondiente = new HashMap<>();
@@ -35,6 +37,12 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         mapNroOpcionBotonCorrespondiente.put(2, R.id.paginaEncuestaOpcion2);
         mapNroOpcionBotonCorrespondiente.put(3, R.id.paginaEncuestaOpcion3);
         mapNroOpcionBotonCorrespondiente.put(4, R.id.paginaEncuestaOpcion4);
+        mapNroOpcionBotonCorrespondiente.put(5, R.id.paginaEncuestaOpcion5);
+        mapNroOpcionBotonCorrespondiente.put(6, R.id.paginaEncuestaOpcion6);
+        mapNroOpcionBotonCorrespondiente.put(7, R.id.paginaEncuestaOpcion7);
+        mapNroOpcionBotonCorrespondiente.put(8, R.id.paginaEncuestaOpcion8);
+        mapNroOpcionBotonCorrespondiente.put(9, R.id.paginaEncuestaOpcion9);
+        mapNroOpcionBotonCorrespondiente.put(10, R.id.paginaEncuestaOpcion10);
     }
 
     @Override
@@ -50,14 +58,17 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
 
         TextView textTitulo = (TextView) rootView.findViewById(R.id.paginaEncuestaPregunta);
         textTitulo.setText(this.obtenerTitulo());
+        String textoOpcion;
 
         for (int nroOpcion = 1; nroOpcion <= cantOpciones; nroOpcion++) {
             botonOpcion = (ToggleButton) rootView.findViewById(mapNroOpcionBotonCorrespondiente.get(nroOpcion));
-            botonOpcion.setOnCheckedChangeListener(checkGeneralBotonListener);
+            botonOpcion.setOnCheckedChangeListener(this.checkGeneralBotonListener);
 
-            botonOpcion.setText(this.obtenerOpcion(nroOpcion));
-            botonOpcion.setTextOn(this.obtenerOpcion(nroOpcion));
-            botonOpcion.setTextOff(this.obtenerOpcion(nroOpcion));
+            textoOpcion = this.obtenerOpcion(nroOpcion);
+
+            botonOpcion.setText(textoOpcion);
+            botonOpcion.setTextOn(textoOpcion);
+            botonOpcion.setTextOff(textoOpcion);
 
             listaOpciones.add(botonOpcion);
         }

@@ -34,7 +34,7 @@ public class CrazyTowerHome extends Activity {
     private int nroImagen;
     private ImageSwitcher imageSwitcher;
     private static final Integer DURACION_IMAGEN_MS = 8000;
-    private int[] gallery = {R.drawable.nike, R.drawable.adidas, R.drawable.puma, R.drawable.reebok};
+    private int[] galeriaEstatica = {R.drawable.ikea};
     private List<Bitmap> imagenes;
 
     @Override
@@ -50,7 +50,7 @@ public class CrazyTowerHome extends Activity {
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
 
         this.imagenes = new ArrayList<>();
-        Bitmap bitmap;
+        /*Bitmap bitmap;
 
         for (int i=0; i < 3; i++) {
             bitmap = this.cargarImagen(i);
@@ -58,7 +58,7 @@ public class CrazyTowerHome extends Activity {
             if (bitmap != null) {
                 this.imagenes.add(bitmap);
             }
-        }
+        }*/
     }
 
     private Bitmap cargarImagen(int nroImagen) {
@@ -101,7 +101,6 @@ public class CrazyTowerHome extends Activity {
     private void iniciarImageSwitcher() {
         this.imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         this.imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-
             public View makeView() {
                 ImageView imageView = new ImageView(CrazyTowerHome.this);
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -111,10 +110,9 @@ public class CrazyTowerHome extends Activity {
 
         this.imageSwitcher.postDelayed(new Runnable() {
             public void run() {
-                //imageSwitcher.setImageResource(gallery[nroImagen++]);
-                imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), CrazyTowerHome.this.imagenes.get(nroImagen++)));
+                CrazyTowerHome.this.definirImagen(nroImagen++);
 
-                if (nroImagen == CrazyTowerHome.this.imagenes.size()) {
+                if (nroImagen == CrazyTowerHome.this.obtenerCantidadImagenes()) {
                     nroImagen = 0;
                 }
                 imageSwitcher.postDelayed(this, DURACION_IMAGEN_MS);
@@ -126,5 +124,21 @@ public class CrazyTowerHome extends Activity {
         Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         imageSwitcher.setInAnimation(fadeIn);
         imageSwitcher.setOutAnimation(fadeOut);
+    }
+
+    private void definirImagen(int nroImagen) {
+        if (this.imagenes.isEmpty()) {
+            this.imageSwitcher.setImageResource(this.galeriaEstatica[nroImagen]);
+        } else {
+            this.imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), CrazyTowerHome.this.imagenes.get(nroImagen)));
+        }
+    }
+
+    private int obtenerCantidadImagenes() {
+        if (this.imagenes.isEmpty()) {
+            return (this.galeriaEstatica.length);
+        } else {
+            return (this.imagenes.size());
+        }
     }
 }

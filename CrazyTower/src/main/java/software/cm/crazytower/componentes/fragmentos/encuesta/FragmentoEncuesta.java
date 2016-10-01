@@ -11,7 +11,7 @@ import java.util.List;
 import software.cm.crazytower.actividades.encuesta.FragmentoEncuestaOpcionListener;
 
 public abstract class FragmentoEncuesta extends Fragment  {
-    private static final int CANT_MAX_OPCIONES = 8;
+    private static final int CANT_MAX_OPCIONES = 10;
 
     private static final String PARAMETRO_TITULO = "paramTitulo";
     private static final String PARAMETRO_CANT_OPCIONES = "paramCantOpciones";

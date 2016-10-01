@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0px"
@@ -15,7 +14,7 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Marca el grupo que te identifica:"
-            android:id="@+id/textView"
+            android:id="@+id/paginaEncuestaPregunta"
             android:textAlignment="center" />
     </FrameLayout>
 
@@ -25,160 +24,116 @@
         android:layout_height="0px"
         android:layout_weight="0.9">
 
-        <!-- BOTONES IZQUIERDA -->
+        <!-- ESPACIO IZQUIERDA -->
         <Space
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.3"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_weight="0.3"
-            android:background="@drawable/gender_symbol_male">
+            android:layout_weight="0.4">
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.05"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoM12_30"
+                android:id="@+id/paginaEncuestaOpcion1"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="12 - 30 Años"
-                android:textOn="12 - 30 Años" />
+                android:layout_weight="0.15"
+                android:textOff="opcion 1"
+                android:textOn="opcion 1" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.0375"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoM30_45"
+                android:id="@+id/paginaEncuestaOpcion2"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="31 - 45 años"
-                android:textOn="31 - 45 años" />
+                android:layout_weight="0.15"
+                android:textOff="opcion 2"
+                android:textOn="opcion 2" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.0375"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoM45"
+                android:id="@+id/paginaEncuestaOpcion3"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="+ 45 años"
-                android:textOn="+ 45 años" />
+                android:layout_weight="0.15"
+                android:textOff="opcion 3"
+                android:textOn="opcion 3" />
 
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.0375"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion4"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.15"
+                android:textOff="opcion 4"
+                android:textOn="opcion 4" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.0375"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/paginaEncuestaOpcion5"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.15"
+                android:textOff="opcion 5"
+                android:textOn="opcion 5" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.05"/>
         </LinearLayout>
 
+        <!-- ESPACIO DERECHA -->
         <Space
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.1"/>
-
-        <!-- BOTONES DERECHA -->
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="0.3"
-            android:background="@drawable/gender_symbol_female">
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
-
-            <ToggleButton
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoF12_30"
-                android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_mujer"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="12 - 30 años"
-                android:textOn="12 - 30 años" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
-
-            <ToggleButton
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoF30_45"
-                android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_mujer"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="31 - 45 años"
-                android:textOn="31 - 45 años" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
-
-            <ToggleButton
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:text="New ToggleButton"
-                android:id="@+id/sexoF45"
-                android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_mujer"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"
-                android:textOff="+ 45 años"
-                android:textOn="+ 45 años" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
-        </LinearLayout>
-
-        <Space
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.3"/>
     </LinearLayout>
 </LinearLayout>
