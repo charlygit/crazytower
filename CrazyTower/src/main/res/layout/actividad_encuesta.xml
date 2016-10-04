@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".actividades.encuesta.ActividadEncuesta"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/color_fondo">
 
     <!-- botones adelante, atras y pantalla principal -->
     <FrameLayout
@@ -18,12 +19,15 @@
             android:layout_height="match_parent">
 
             <Button
+                android:background="@drawable/boton_encuesta_atras_siguiente"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/encuestaBotonAtras"
+                android:textColor="#0D329D"
                 android:id="@+id/botonAtras"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.1"
+                android:layout_marginLeft="10dp"/>
 
             <android.support.v4.view.ViewPager
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -33,12 +37,16 @@
                 android:layout_weight="0.8"/>
 
             <Button
+                android:background="@drawable/boton_encuesta_atras_siguiente"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/encuestaBotonAdelante"
+                android:text=">"
+                android:textColor="#0D329D"
                 android:id="@+id/botonAdelante"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="0.1" />
+                android:layout_weight="0.1"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"/>
         </LinearLayout>
     </FrameLayout>
 
@@ -50,6 +58,7 @@
 
         <ProgressBar
             style="?android:attr/progressBarStyleHorizontal"
+            android:progressDrawable="@drawable/encuesta_barra_progreso"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/progressBar"

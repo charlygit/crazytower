@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Pregunta"
+            android:text="Marca el grupo que te identifica:"
             android:id="@+id/paginaEncuestaPregunta"
             android:textAlignment="center" />
     </FrameLayout>
@@ -29,13 +29,13 @@
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.3"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0px"
             android:layout_height="match_parent"
-            android:layout_weight="0.3">
+            android:layout_weight="0.4">
 
             <Space
                 android:layout_width="match_parent"
@@ -48,9 +48,9 @@
                 android:layout_height="0px"
                 android:id="@+id/paginaEncuestaOpcion1"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.3"
+                android:layout_weight="0.15"
                 android:textOff="opcion 1"
                 android:textOn="opcion 1" />
 
@@ -58,16 +58,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"/>
+                android:layout_weight="0.06"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:id="@+id/paginaEncuestaOpcion2"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.3"
+                android:layout_weight="0.15"
                 android:textOff="opcion 2"
                 android:textOn="opcion 2" />
 
@@ -75,36 +75,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
-        </LinearLayout>
-
-        <!-- ESPACIO CENTRO -->
-        <Space
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.2"/>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="0px"
-            android:layout_height="match_parent"
-            android:layout_weight="0.3">
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="0px"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="0.1"/>
+                android:layout_weight="0.06"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:id="@+id/paginaEncuestaOpcion3"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.3"
+                android:layout_weight="0.15"
                 android:textOff="opcion 3"
                 android:textOn="opcion 3" />
 
@@ -112,16 +92,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.2"/>
+                android:layout_weight="0.06"/>
 
             <ToggleButton
                 android:layout_width="match_parent"
                 android:layout_height="0px"
                 android:id="@+id/paginaEncuestaOpcion4"
                 android:textAllCaps="false"
-                android:background="@drawable/boton_redondeado_hombre"
+                android:background="@drawable/boton_encuesta"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="0.3"
+                android:layout_weight="0.15"
                 android:textOff="opcion 4"
                 android:textOn="opcion 4" />
 
@@ -137,6 +117,6 @@
             android:layout_width="0px"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.3"/>
     </LinearLayout>
 </LinearLayout>

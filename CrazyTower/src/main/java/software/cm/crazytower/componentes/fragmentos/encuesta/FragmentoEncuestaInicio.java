@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import java.util.List;
 
 import software.cm.crazytower.R;
 
@@ -15,5 +18,10 @@ public class FragmentoEncuestaInicio extends FragmentoEncuesta {
                 R.layout.fragmento_actividad_encuesta_inicio, container, false);
 
         return rootView;
+    }
+
+    @Override
+    protected List<ToggleButton> obtenerOpciones() {
+        return null;
     }
 }

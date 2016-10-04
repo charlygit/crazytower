@@ -1,7 +1,10 @@
 package software.cm.crazytower.actividades;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,9 +18,15 @@ import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.ViewSwitcher;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
+import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.helpers.Constantes;
+import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
 public class CrazyTowerHome extends Activity {
@@ -25,7 +34,8 @@ public class CrazyTowerHome extends Activity {
     private int nroImagen;
     private ImageSwitcher imageSwitcher;
     private static final Integer DURACION_IMAGEN_MS = 8000;
-    private int[] gallery = {R.drawable.nike, R.drawable.adidas, R.drawable.puma, R.drawable.reebok};
+    private int[] galeriaEstatica = {R.drawable.ikea};
+    private List<Bitmap> imagenes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,28 @@ public class CrazyTowerHome extends Activity {
 
         // Inicia el servicio de monitoreo de conexiones
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
+
+        this.imagenes = new ArrayList<>();
+        /*Bitmap bitmap;
+
+        for (int i=0; i < 3; i++) {
+            bitmap = this.cargarImagen(i);
+
+            if (bitmap != null) {
+                this.imagenes.add(bitmap);
+            }
+        }*/
+    }
+
+    private Bitmap cargarImagen(int nroImagen) {
+        try {
+            String nombreArchivo = String.format("%s_%s", Constantes.PREFIJO_NOMBRE_ARCHIVO_IMAGEN_HOME, nroImagen);
+            return (UtilidadesArchivo.cargarArchivo(CrazyTowerHome.this, nombreArchivo));
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Log.e(CrazyTowerSplash.class.getSimpleName(), excepcionGeneral.getMessage());
+
+            return null;
+        }
     }
 
     @Override
@@ -69,7 +101,6 @@ public class CrazyTowerHome extends Activity {
     private void iniciarImageSwitcher() {
         this.imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
         this.imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-
             public View makeView() {
                 ImageView imageView = new ImageView(CrazyTowerHome.this);
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -79,9 +110,9 @@ public class CrazyTowerHome extends Activity {
 
         this.imageSwitcher.postDelayed(new Runnable() {
             public void run() {
-                imageSwitcher.setImageResource(gallery[nroImagen++]);
+                CrazyTowerHome.this.definirImagen(nroImagen++);
 
-                if (nroImagen == gallery.length) {
+                if (nroImagen == CrazyTowerHome.this.obtenerCantidadImagenes()) {
                     nroImagen = 0;
                 }
                 imageSwitcher.postDelayed(this, DURACION_IMAGEN_MS);
@@ -93,5 +124,21 @@ public class CrazyTowerHome extends Activity {
         Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
         imageSwitcher.setInAnimation(fadeIn);
         imageSwitcher.setOutAnimation(fadeOut);
+    }
+
+    private void definirImagen(int nroImagen) {
+        if (this.imagenes.isEmpty()) {
+            this.imageSwitcher.setImageResource(this.galeriaEstatica[nroImagen]);
+        } else {
+            this.imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), CrazyTowerHome.this.imagenes.get(nroImagen)));
+        }
+    }
+
+    private int obtenerCantidadImagenes() {
+        if (this.imagenes.isEmpty()) {
+            return (this.galeriaEstatica.length);
+        } else {
+            return (this.imagenes.size());
+        }
     }
 }
