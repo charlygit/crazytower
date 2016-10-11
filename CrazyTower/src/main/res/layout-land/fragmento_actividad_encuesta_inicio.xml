@@ -9,7 +9,7 @@
         android:layout_height="0dp"
         android:layout_weight="0.9"
         android:id="@+id/imageView"
-        android:src="@drawable/ikea"/>
+        android:src="@drawable/imagen_ikea"/>
 
     <TextView
         android:id="@+id/textoFragmento4"

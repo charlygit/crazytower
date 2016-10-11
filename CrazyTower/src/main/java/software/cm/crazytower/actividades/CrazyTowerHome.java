@@ -1,8 +1,8 @@
 package software.cm.crazytower.actividades;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -23,8 +23,9 @@ import java.util.List;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
+import software.cm.crazytower.arduino.ControladorArduino;
+import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.errores.ExcepcionGeneral;
-import software.cm.crazytower.helpers.APManager;
 import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
@@ -34,8 +35,9 @@ public class CrazyTowerHome extends Activity {
     private int nroImagen;
     private ImageSwitcher imageSwitcher;
     private static final Integer DURACION_IMAGEN_MS = 8000;
-    private int[] galeriaEstatica = {R.drawable.ikea};
+    private int[] galeriaEstatica = {R.drawable.imagen_ikea};
     private List<Bitmap> imagenes;
+    private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +52,13 @@ public class CrazyTowerHome extends Activity {
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
 
         this.imagenes = new ArrayList<>();
+
+        // Inicia y registra arduino broadcast receiver
+        this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
+        IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
+
+        registerReceiver(this.broadcastReceiverConexionSerial, filter);
+
         /*Bitmap bitmap;
 
         for (int i=0; i < 3; i++) {
@@ -93,6 +102,13 @@ public class CrazyTowerHome extends Activity {
                 startActivity(intent);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     // ----------

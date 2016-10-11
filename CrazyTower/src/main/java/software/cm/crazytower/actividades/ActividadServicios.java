@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
+import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.helpers.APManager;
 
 public class ActividadServicios extends AppCompatActivity {
@@ -29,6 +30,8 @@ public class ActividadServicios extends AppCompatActivity {
         setContentView(R.layout.actividad_servicios);
 
         this.anclajeRedReceiver = new AnclajeRedReceiver();
+
+        ControladorArduino.habilitarPuerto(this);
 
         new Handler().postDelayed(new Runnable(){
             @Override

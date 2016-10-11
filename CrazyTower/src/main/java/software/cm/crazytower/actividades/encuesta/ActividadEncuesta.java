@@ -1,6 +1,7 @@
 package software.cm.crazytower.actividades.encuesta;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +15,8 @@ import android.widget.ProgressBar;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.ActividadServicios;
+import software.cm.crazytower.arduino.ControladorArduino;
+import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
@@ -25,6 +28,7 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
     private PagerAdapter mPaginadorAdapter;
     private int maximaPaginaVisitada;
     private ProgressBar mProgressBar;
+    private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
 
     // Botones adelante y atras
     private Button botonAdelante;
@@ -54,6 +58,19 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         this.configurarBotonesAdelanteYAtras();
 
         this.maximaPaginaVisitada = 0;
+
+        // Inicia y registra arduino broadcast receiver
+        this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
+        IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
+
+        registerReceiver(this.broadcastReceiverConexionSerial, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     @Override
