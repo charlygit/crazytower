@@ -2,6 +2,7 @@ package software.cm.crazytower.actividades;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import software.cm.crazytower.R;
+import software.cm.crazytower.arduino.ControladorArduino;
+import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.TextProgressBar;
 import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.helpers.Constantes;
@@ -22,6 +25,7 @@ import software.cm.crazytower.helpers.UtilidadesInternet;
 
 public class CrazyTowerSplash extends Activity {
     private final int SPLASH_DISPLAY_LENGTH = 1000;
+    private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
     /*private String[] urls = {
         "http://nine9.com/wp-content/uploads/2016/06/nike_justdoit_00.jpg",
         "http://hlgstudios.com/wp-content/uploads/2011/09/reebok_logo_transparent.png",
@@ -43,6 +47,10 @@ public class CrazyTowerSplash extends Activity {
         DescargadorImagenes descargadorImagenes = new DescargadorImagenes(barraProgreso);
         descargadorImagenes.execute(this.urls);
 
+        this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
+        IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
+
+        registerReceiver(this.broadcastReceiverConexionSerial, filter);
         /*new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
@@ -52,6 +60,13 @@ public class CrazyTowerSplash extends Activity {
                 CrazyTowerSplash.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);*/
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     private class DescargadorImagenes extends AsyncTask<String, Integer, List<Bitmap>> {
