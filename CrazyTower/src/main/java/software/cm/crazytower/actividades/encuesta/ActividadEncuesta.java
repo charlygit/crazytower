@@ -60,17 +60,17 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         this.maximaPaginaVisitada = 0;
 
         // Inicia y registra arduino broadcast receiver
-        this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
+        /*this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
         IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
 
-        registerReceiver(this.broadcastReceiverConexionSerial, filter);
+        registerReceiver(this.broadcastReceiverConexionSerial, filter);*/
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(this.broadcastReceiverConexionSerial);
+        //unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     @Override
