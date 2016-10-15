@@ -47,10 +47,10 @@ public class CrazyTowerSplash extends Activity {
         DescargadorImagenes descargadorImagenes = new DescargadorImagenes(barraProgreso);
         descargadorImagenes.execute(this.urls);
 
-        this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
+        /*this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
         IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
 
-        registerReceiver(this.broadcastReceiverConexionSerial, filter);
+        registerReceiver(this.broadcastReceiverConexionSerial, filter);*/
         /*new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
@@ -66,7 +66,7 @@ public class CrazyTowerSplash extends Activity {
     protected void onDestroy() {
         super.onDestroy();
 
-        unregisterReceiver(this.broadcastReceiverConexionSerial);
+        //unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     private class DescargadorImagenes extends AsyncTask<String, Integer, List<Bitmap>> {

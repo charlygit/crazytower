@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,7 +30,7 @@ public class ControladorArduino {
     private static UsbDevice dispositivo;
     private static UsbSerialDevice serialPort;
     private static UsbDeviceConnection conexion;
-
+    private static Context contextoStatic;
     private static int proxSlotLibre = 0;
 
     private static UsbSerialInterface.UsbReadCallback mCallbackArduino = new UsbSerialInterface.UsbReadCallback() {
@@ -38,6 +39,8 @@ public class ControladorArduino {
             try {
                 String data = new String(arg0, "UTF-8");
                 data.concat(FIN_DATOS_ARDUINO);
+
+                Toast.makeText(contextoStatic, "Recibido: " + data, Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,6 +57,7 @@ public class ControladorArduino {
 
     private static void enviarDatos(Context contexto, String datos) {
         try {
+            contextoStatic = contexto;
             if (serialPort != null) {
                 if (UtilidadesString.esVacioTexto(datos)) {
                     Toast.makeText(contexto, "No se pueden enviar datos NULL a Arduino", Toast.LENGTH_LONG).show();
@@ -63,7 +67,7 @@ public class ControladorArduino {
                 String string = datos.toString();
                 serialPort.write(string.getBytes());
 
-                Toast.makeText(contexto, "Datos enviados a Arduino: " + datos, Toast.LENGTH_LONG).show();
+                Toast.makeText(contexto, "Envio: " + datos, Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(contexto, "No se pueden enviar datos a Arduino (puerto serial nulo)", Toast.LENGTH_LONG).show();
             }
@@ -102,6 +106,7 @@ public class ControladorArduino {
     }
 
     public static void iniciarConexionArduino(Context contexto) {
+        usbManager = (UsbManager) contexto.getSystemService(contexto.USB_SERVICE);
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
 
         if (!usbDevices.isEmpty()) {
