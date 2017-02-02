@@ -26,14 +26,14 @@ import software.cm.crazytower.helpers.UtilidadesInternet;
 public class CrazyTowerSplash extends Activity {
     private final int SPLASH_DISPLAY_LENGTH = 1000;
     private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
-    /*private String[] urls = {
+    private String[] urls = {
         "http://nine9.com/wp-content/uploads/2016/06/nike_justdoit_00.jpg",
         "http://hlgstudios.com/wp-content/uploads/2011/09/reebok_logo_transparent.png",
         "http://www.sernac.cl/wp-content/uploads/2015/12/Adidas.jpg"
-    };*/
-
-    private String[] urls = {
     };
+
+    /*private String[] urls = {
+    };*/
 
     /** Called when the activity is first created. */
     @Override
