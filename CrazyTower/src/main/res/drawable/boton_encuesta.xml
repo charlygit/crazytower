@@ -4,9 +4,11 @@
 
 <item android:state_checked="false">
     <shape>
-        <solid android:color="@android:color/transparent" />
+        <!--<solid android:color="@android:color/transparent" />-->
+        <solid android:color="@android:color/white" />
 
-        <stroke android:width="2dp" android:color="#F0652C" />
+        <!--<stroke android:width="2dp" android:color="#F0652C" />-->
+        <stroke android:width="2dp" android:color="@android:color/holo_red_dark" />
 
         <corners android:radius="15dp" />
 
