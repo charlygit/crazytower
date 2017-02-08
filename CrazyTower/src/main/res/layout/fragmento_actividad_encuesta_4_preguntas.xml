@@ -69,7 +69,8 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.15"
                 android:textOff="opcion 2"
-                android:textOn="opcion 2" />
+                android:textOn="opcion 2"
+                android:fontFamily="sans-serif-medium" />
 
             <Space
                 android:layout_width="match_parent"
@@ -103,7 +104,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_weight="0.15"
                 android:textOff="opcion 4"
-                android:textOn="opcion 4" />
+                android:textOn="opcion 4"/>
 
             <Space
                 android:layout_width="match_parent"

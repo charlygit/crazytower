@@ -1,5 +1,7 @@
 package software.cm.crazytower.componentes.fragmentos.encuesta;
 
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +14,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import software.cm.crazytower.R;
+
+import static android.R.attr.typeface;
 
 public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
     private enum AccionListener {AGREGAR, QUITAR};
@@ -60,15 +65,18 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         textTitulo.setText(this.obtenerTitulo());
         String textoOpcion;
 
+        Typeface custom_font = Typeface.createFromAsset(rootView.getContext().getAssets(),  "fonts/ufonts.com_gillsans.ttf");
+
         for (int nroOpcion = 1; nroOpcion <= cantOpciones; nroOpcion++) {
             botonOpcion = (ToggleButton) rootView.findViewById(mapNroOpcionBotonCorrespondiente.get(nroOpcion));
             botonOpcion.setOnCheckedChangeListener(this.checkGeneralBotonListener);
-
             textoOpcion = this.obtenerOpcion(nroOpcion);
 
             botonOpcion.setText(textoOpcion);
             botonOpcion.setTextOn(textoOpcion);
             botonOpcion.setTextOff(textoOpcion);
+
+            botonOpcion.setTypeface(custom_font);
 
             listaOpciones.add(botonOpcion);
         }
