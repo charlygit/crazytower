@@ -57,15 +57,17 @@ public class FragmentoEncuestaOpcionesDinamicas extends FragmentoEncuesta {
         ViewGroup rootView = (ViewGroup) inflater.inflate(
                 mapCantOpcionesFragmentoLayout.get(cantOpciones), container, false);
 
+        Typeface custom_font = Typeface.createFromAsset(rootView.getContext().getAssets(),  "fonts/ufonts.com_gillsans.ttf");
+
         // Se inicializan los botones
         ToggleButton botonOpcion;
         this.listaOpciones = new LinkedList<>();
 
         TextView textTitulo = (TextView) rootView.findViewById(R.id.paginaEncuestaPregunta);
+        textTitulo.setTypeface(custom_font);
         textTitulo.setText(this.obtenerTitulo());
         String textoOpcion;
 
-        Typeface custom_font = Typeface.createFromAsset(rootView.getContext().getAssets(),  "fonts/ufonts.com_gillsans.ttf");
 
         for (int nroOpcion = 1; nroOpcion <= cantOpciones; nroOpcion++) {
             botonOpcion = (ToggleButton) rootView.findViewById(mapNroOpcionBotonCorrespondiente.get(nroOpcion));
