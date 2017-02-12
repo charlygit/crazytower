@@ -1,6 +1,5 @@
 package software.cm.crazytower.actividades;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -9,9 +8,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageSwitcher;
@@ -20,17 +26,21 @@ import android.widget.ViewSwitcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
 import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
+import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeImagen;
+import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeVideo;
 import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
-public class CrazyTowerHome extends Activity {
+public class CrazyTowerHome extends FragmentActivity {
     // Variables de control del visor de propagandas
     private int nroImagen;
     private ImageSwitcher imageSwitcher;
@@ -38,6 +48,10 @@ public class CrazyTowerHome extends Activity {
     private int[] galeriaEstatica = {R.drawable.imagen_ikea};
     private List<Bitmap> imagenes;
     private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
+    private ViewPager mPaginador;
+    private FragmentPagerAdapter mPaginadorAdapter;
+    private static final int cantPaginas = 2;
+    private int paginaActual = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +60,16 @@ public class CrazyTowerHome extends Activity {
         setContentView(R.layout.activity_crazytower_homescreen);
 
         // Iniciar el visor de propagandas
-        this.iniciarImageSwitcher();
+        //this.iniciarImageSwitcher();
 
+        this.mPaginador = (ViewPager) findViewById(R.id.pagerHome);
+        this.mPaginador.setOffscreenPageLimit(10);
+        this.mPaginador.addOnPageChangeListener(new HomePageOnPageChangeListener());
+        this.mPaginadorAdapter = new HomePageAdapter(getSupportFragmentManager());
+        this.mPaginador.setAdapter(mPaginadorAdapter);
+        this.mPaginador.beginFakeDrag();
+
+        //this.mPaginador.setCurrentItem(0);
         // Inicia el servicio de monitoreo de conexiones
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
 
@@ -115,7 +137,7 @@ public class CrazyTowerHome extends Activity {
     // AUXILIARES
     // ----------
     private void iniciarImageSwitcher() {
-        this.imageSwitcher = (ImageSwitcher) findViewById(R.id.imageSwitcher);
+        this.imageSwitcher = null; //(ImageSwitcher) findViewById(R.id.imageSwitcher);
         this.imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             public View makeView() {
                 ImageView imageView = new ImageView(CrazyTowerHome.this);
@@ -155,6 +177,81 @@ public class CrazyTowerHome extends Activity {
             return (this.galeriaEstatica.length);
         } else {
             return (this.imagenes.size());
+        }
+    }
+
+    public void cambiarPagina() {
+        this.paginaActual++;
+
+        if (paginaActual >= cantPaginas) {
+            this.paginaActual = 0;
+        }
+
+        this.mPaginador.setCurrentItem(this.paginaActual);
+    }
+
+    private class HomePageOnPageChangeListener implements ViewPager.OnPageChangeListener {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            Fragment fragment = ((HomePageAdapter) CrazyTowerHome.this.mPaginador.getAdapter()).getRegisteredFragment(position);
+
+            if (fragment instanceof FragmentoHomeImagen) {
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        CrazyTowerHome.this.cambiarPagina();
+                    }
+                }, 10000);
+            } else {
+                ((FragmentoHomeVideo) fragment).reproducirVideo();
+            }
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+        }
+    }
+
+    private class HomePageAdapter extends FragmentPagerAdapter {
+        SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+        public HomePageAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return new FragmentoHomeVideo();
+            } else {
+                return new FragmentoHomeImagen();
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            Fragment fragment = (Fragment) super.instantiateItem(container, position);
+            registeredFragments.put(position, fragment);
+            return fragment;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+
+        public Fragment getRegisteredFragment(int position) {
+            return registeredFragments.get(position);
         }
     }
 }

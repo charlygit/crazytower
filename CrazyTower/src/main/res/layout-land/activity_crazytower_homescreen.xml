@@ -11,10 +11,16 @@
         android:layout_height="0px"
         android:layout_weight="0.1"/>
 
-    <ImageSwitcher
+    <!--<ImageSwitcher
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:id="@+id/imageSwitcher"
+        android:layout_weight="0.7"/>-->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pagerHome"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
         android:layout_weight="0.7"/>
 
     <Space
