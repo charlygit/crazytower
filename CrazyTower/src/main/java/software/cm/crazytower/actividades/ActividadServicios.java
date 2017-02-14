@@ -6,14 +6,23 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
+
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
 import software.cm.crazytower.arduino.ControladorArduino;
+import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.helpers.APManager;
 
 public class ActividadServicios extends AppCompatActivity {
@@ -24,6 +33,11 @@ public class ActividadServicios extends AppCompatActivity {
     private AnclajeRedReceiver anclajeRedReceiver = null;
     private Boolean anclajeRedReceiverRegistrado = false;
 
+    private ToggleButton boton0;
+    private ToggleButton boton1;
+    private ToggleButton boton2;
+    private ToggleButton boton3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +45,20 @@ public class ActividadServicios extends AppCompatActivity {
 
         this.anclajeRedReceiver = new AnclajeRedReceiver();
 
-        ControladorArduino.habilitarPuerto(this);
+        // ControladorArduino.habilitarPuerto(this);
+
+        boton0 = (ToggleButton) findViewById(R.id.usb0);
+        boton1 = (ToggleButton) findViewById(R.id.usb1);
+        boton2 = (ToggleButton) findViewById(R.id.usb2);
+        boton3 = (ToggleButton) findViewById(R.id.usb3);
+
+        List<ToggleButton> botonesCarga = Arrays.asList(boton0, boton1, boton2, boton3);
+
+        for (ToggleButton boton : botonesCarga) {
+            boton.setOnCheckedChangeListener(checkGeneralBotonListener);
+        }
+
+        // Botones de carga
 
         new Handler().postDelayed(new Runnable(){
             @Override
@@ -128,4 +155,62 @@ public class ActividadServicios extends AppCompatActivity {
             }
         }
     }
+
+    CompoundButton.OnCheckedChangeListener checkGeneralBotonListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                List<ToggleButton> botonesCarga = Arrays.asList(boton0, boton1, boton2, boton3);
+
+                for (ToggleButton boton : botonesCarga) {
+                    if (boton == buttonView) {
+                        String datoAEnviar = this.obtenerDatoEnviadoPorBoton(boton);
+
+                        if (datoAEnviar != null) {
+                            Toast.makeText(ActividadServicios.this, "Se envía el dato: " + datoAEnviar, Toast.LENGTH_SHORT).show();
+                            ControladorArduino.habilitarPuerto(ActividadServicios.this, datoAEnviar);
+                        }
+                    } else {
+                        boton.setOnCheckedChangeListener(null);
+                        boton.setChecked(false);
+                        boton.setOnCheckedChangeListener(checkGeneralBotonListener);
+                    }
+                }
+            } else {
+                boolean algunBotonMarcado = this.hayBotonMarcado();
+
+                if (!algunBotonMarcado) {
+                    buttonView.setChecked(true);
+                }
+            }
+        }
+
+        private boolean hayBotonMarcado() {
+            List<ToggleButton> botonesCarga = Arrays.asList(boton0, boton1, boton2, boton3);
+            Iterator<ToggleButton> itBotones = botonesCarga.iterator();
+            boolean algunoMarcado = false;
+
+            while (itBotones.hasNext() && !algunoMarcado) {
+                algunoMarcado = itBotones.next().isChecked();
+            }
+
+            return (algunoMarcado);
+        }
+
+        private String obtenerDatoEnviadoPorBoton(ToggleButton toggleButton) {
+            if (toggleButton == boton0) {
+                return "0";
+            } else if (toggleButton == boton1) {
+                return "1";
+            } else if (toggleButton == boton2) {
+                return "2";
+            } else if (toggleButton == boton3) {
+                return "3";
+            } else {
+                Toast.makeText(ActividadServicios.this, "El botón no se registra como válido", Toast.LENGTH_LONG).show();
+            }
+
+            return null;
+        }
+    };
 }

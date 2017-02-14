@@ -26,11 +26,129 @@
         android:layout_marginLeft="20dp"/>
 
 
-    <Space
+    <!-- COMIENZA CODIGO BOTONES -->
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0px"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.7"/>
+        android:layout_weight="0.7">
+
+        <!-- ESPACIO IZQUIERDA -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/usb0"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.3"
+                android:textOff="USB 1"
+                android:textOn="USB 1" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/usb2"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.3"
+                android:textOff="USB 3"
+                android:textOn="USB 3" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+
+        <!-- ESPACIO CENTRO -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.2"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/usb1"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.3"
+                android:textOff="USB 2"
+                android:textOn="USB 2" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.2"/>
+
+            <ToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:id="@+id/usb3"
+                android:textAllCaps="false"
+                android:background="@drawable/boton_encuesta"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.3"
+                android:textOff="USB 4"
+                android:textOn="USB 4" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="0px"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.1"/>
+        </LinearLayout>
+
+        <!-- ESPACIO DERECHA -->
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.1"/>
+    </LinearLayout>
+    <!-- FINALIZA CODIGO BOTONES -->
 
     <TextView
         android:id="@+id/idMensajeClaveWifi"
