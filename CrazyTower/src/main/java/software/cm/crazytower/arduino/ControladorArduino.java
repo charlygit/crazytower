@@ -55,6 +55,10 @@ public class ControladorArduino {
         }
     }
 
+    public static void habilitarPuerto(Context contexto, String dato) {
+        enviarDatos(contexto, dato);
+    }
+
     private static void enviarDatos(Context contexto, String datos) {
         try {
             contextoStatic = contexto;
