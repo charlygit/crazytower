@@ -38,6 +38,9 @@ public class ActividadServicios extends AppCompatActivity {
     private ToggleButton boton2;
     private ToggleButton boton3;
 
+    private Handler handler;
+    private Runnable runnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +73,17 @@ public class ActividadServicios extends AppCompatActivity {
 
 
         // Vuelve a la pagina principal luego de un tiempo
-        new Handler().postDelayed(new Runnable(){
+        this.handler = new Handler();
+
+        this.runnable = new Runnable() {
             @Override
             public void run() {
                 Intent mainIntent = new Intent(ActividadServicios.this, CrazyTowerHome.class);
                 ActividadServicios.this.startActivity(mainIntent);
                 ActividadServicios.this.finish();
             }
-        }, TIEMPO_VUELTA_HOME);
+        };
+        this.handler.postDelayed(runnable, TIEMPO_VUELTA_HOME);
     }
 
     @Override
@@ -169,6 +175,19 @@ public class ActividadServicios extends AppCompatActivity {
                         if (datoAEnviar != null) {
                             Toast.makeText(ActividadServicios.this, "Se envía el dato: " + datoAEnviar, Toast.LENGTH_SHORT).show();
                             ControladorArduino.habilitarPuerto(ActividadServicios.this, datoAEnviar);
+
+                            if (ActividadServicios.this.handler != null && ActividadServicios.this.runnable != null) {
+                                ActividadServicios.this.handler.removeCallbacks(ActividadServicios.this.runnable);
+                            }
+
+                            new Handler().postDelayed(new Runnable(){
+                                @Override
+                                public void run() {
+                                    Intent mainIntent = new Intent(ActividadServicios.this, CrazyTowerHome.class);
+                                    ActividadServicios.this.startActivity(mainIntent);
+                                    ActividadServicios.this.finish();
+                                }
+                            }, (TIEMPO_VUELTA_HOME / 60L));
                         }
                     } else {
                         boton.setOnCheckedChangeListener(null);
