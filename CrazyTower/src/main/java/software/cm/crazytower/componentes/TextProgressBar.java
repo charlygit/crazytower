@@ -15,21 +15,21 @@ public class TextProgressBar extends ProgressBar {
 
     public TextProgressBar(Context context) {
         super(context);
-        this.text = "HP";
+        this.text = "0";
         this.textPaint = new Paint();
         this.textPaint.setColor(Color.BLACK);
     }
 
     public TextProgressBar(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.text = "HP";
+        this.text = "0";
         this.textPaint = new Paint();
         this.textPaint.setColor(Color.BLACK);
     }
 
     public TextProgressBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        this.text = "HP";
+        this.text = "0";
         this.textPaint = new Paint();
         this.textPaint.setColor(Color.BLACK);
     }
