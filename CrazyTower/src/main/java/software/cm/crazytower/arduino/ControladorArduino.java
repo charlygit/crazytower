@@ -40,7 +40,7 @@ public class ControladorArduino {
                 String data = new String(arg0, "UTF-8");
                 data.concat(FIN_DATOS_ARDUINO);
 
-                Toast.makeText(contextoStatic, "Recibido: " + data, Toast.LENGTH_LONG).show();
+                //Toast.makeText(contextoStatic, "Recibido: " + data, //Toast.LENGTH_LONG).show();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -64,7 +64,7 @@ public class ControladorArduino {
             contextoStatic = contexto;
             if (serialPort != null) {
                 if (UtilidadesString.esVacioTexto(datos)) {
-                    Toast.makeText(contexto, "No se pueden enviar datos NULL a Arduino", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(contexto, "No se pueden enviar datos NULL a Arduino", //Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -73,10 +73,10 @@ public class ControladorArduino {
 
                 Toast.makeText(contexto, "Envio: " + datos, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(contexto, "No se pueden enviar datos a Arduino (puerto serial nulo)", Toast.LENGTH_LONG).show();
+                //Toast.makeText(contexto, "No se pueden enviar datos a Arduino (puerto serial nulo)", //Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-            Toast.makeText(contexto, "Se produjo un error enviando datos a Arduino", Toast.LENGTH_LONG).show();
+            //Toast.makeText(contexto, "Se produjo un error enviando datos a Arduino", //Toast.LENGTH_LONG).show();
         }
     }
 
@@ -104,7 +104,7 @@ public class ControladorArduino {
                 serialPort.read(mCallbackArduino);
             } else {
                 Log.d("SERIAL", "PORT NOT OPEN");
-                Toast.makeText(contexto, "PORT NOT OPEN", Toast.LENGTH_LONG).show();
+                //Toast.makeText(contexto, "PORT NOT OPEN", //Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -125,23 +125,23 @@ public class ControladorArduino {
                     int dispositivoIterVendorID = dispositivo.getVendorId();
 
                     if (dispositivoIterVendorID == ARDUINO_VENDOR_ID) {
-                        Toast.makeText(contexto, "If principal", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(contexto, "If principal", //Toast.LENGTH_LONG).show();
                         PendingIntent pi = PendingIntent.getBroadcast(contexto, 0, new Intent(PERMISO_USB_LISTENER), 0);
                         usbManager.requestPermission(dispositivo, pi);
                         encontreArduino = true;
 
-                        Toast.makeText(contexto, "Encontre arduino", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(contexto, "Encontre arduino", //Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(contexto, "Connection null", Toast.LENGTH_LONG).show();
+                        //Toast.makeText(contexto, "Connection null", //Toast.LENGTH_LONG).show();
                         conexion = null;
                         dispositivo = null;
                     }
                 }
             } catch (Exception e) {
-                Toast.makeText(contexto, "EX on start", Toast.LENGTH_LONG).show();
+                //Toast.makeText(contexto, "EX on start", //Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(contexto, "No hay dispositivos", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(contexto, "No hay dispositivos", //Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -150,12 +150,12 @@ public class ControladorArduino {
             if (serialPort != null) {
                 serialPort.close();
 
-                Toast.makeText(contexto, "Puerto serial cerrado", Toast.LENGTH_LONG).show();
+                //Toast.makeText(contexto, "Puerto serial cerrado", //Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(contexto, "Puerto serial NULL (No se puede cerrar)", Toast.LENGTH_LONG).show();
+                //Toast.makeText(contexto, "Puerto serial NULL (No se puede cerrar)", //Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
-            Toast.makeText(contexto, "EX on start", Toast.LENGTH_LONG).show();
+            //Toast.makeText(contexto, "EX on start", //Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

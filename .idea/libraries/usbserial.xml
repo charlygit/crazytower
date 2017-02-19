@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="usbserial">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/CrazyTower/libs/usbserial.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

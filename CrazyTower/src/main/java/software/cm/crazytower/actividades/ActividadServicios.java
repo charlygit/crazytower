@@ -173,7 +173,7 @@ public class ActividadServicios extends AppCompatActivity {
                         String datoAEnviar = this.obtenerDatoEnviadoPorBoton(boton);
 
                         if (datoAEnviar != null) {
-                            Toast.makeText(ActividadServicios.this, "Se envía el dato: " + datoAEnviar, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(ActividadServicios.this, "Se envía el dato: " + datoAEnviar, Toast.LENGTH_SHORT).show();
                             ControladorArduino.habilitarPuerto(ActividadServicios.this, datoAEnviar);
 
                             if (ActividadServicios.this.handler != null && ActividadServicios.this.runnable != null) {
@@ -187,7 +187,7 @@ public class ActividadServicios extends AppCompatActivity {
                                     ActividadServicios.this.startActivity(mainIntent);
                                     ActividadServicios.this.finish();
                                 }
-                            }, (TIEMPO_VUELTA_HOME / 60L));
+                            }, (TIEMPO_VUELTA_HOME / 120L));
                         }
                     } else {
                         boton.setOnCheckedChangeListener(null);
