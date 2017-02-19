@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".actividades.CrazyTowerHome">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"/>
+
+    <!--<ImageSwitcher
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:id="@+id/imageSwitcher"
+        android:layout_weight="0.7"/>-->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pagerHome"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.7"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="0.1"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:id="@+id/editText"
+        android:text="@string/homescreenToqueParaIniciar"
+        android:clickable="false"
+        android:textAlignment="center"
+        android:inputType="none"
+        android:linksClickable="false"
+        android:layout_weight="0.1"/>
+
+
+</LinearLayout>

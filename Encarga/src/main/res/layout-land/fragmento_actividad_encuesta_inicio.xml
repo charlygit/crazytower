@@ -1,0 +1,22 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.85"
+        android:id="@+id/imageView"
+        android:src="@drawable/claro_encuesta"/>
+
+    <TextView
+        android:id="@+id/textoFragmento4"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.15"
+        android:text="Claro lo invita a cargar su celular. Por favor conteste estas preguntas, solo llevará unos 30 segundos."
+        android:textSize="20dp"/>
+
+</LinearLayout>
