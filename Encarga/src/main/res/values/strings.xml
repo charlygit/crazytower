@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CrazyTower</string>
+    <string name="app_name">Encarga</string>
 
     <string name="btnWifi">Activar Anclaje de red</string>
     <string name="txtContenidoApp">Contenido de aplicación</string>

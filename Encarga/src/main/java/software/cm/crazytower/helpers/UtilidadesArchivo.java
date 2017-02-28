@@ -6,7 +6,11 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 import software.cm.crazytower.errores.ExcepcionGeneral;
 
@@ -48,6 +52,32 @@ public class UtilidadesArchivo {
         } catch (Exception e) {
             throw new ExcepcionGeneral("Se produjo un error al cargar la imagen " + nombreImagen, e);
         }
+    }
+
+    public static String leerArchivoDesdeURI(String uri) throws ExcepcionGeneral {
+        File f = new File(uri);
+        FileInputStream inputStream = null;
+
+        try {
+            inputStream = new FileInputStream(f);
+        } catch (FileNotFoundException e) {
+            throw new ExcepcionGeneral("No se encontró el archivo: " + uri);
+        }
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        int i;
+        try {
+            i = inputStream.read();
+            while (i != -1) {
+                byteArrayOutputStream.write(i);
+                i = inputStream.read();
+            }
+            inputStream.close();
+        } catch (IOException e) {
+            throw new ExcepcionGeneral("Se produjo un error al leer el archivo: " + uri);
+        }
+
+        return byteArrayOutputStream.toString();
     }
 
     // ----------

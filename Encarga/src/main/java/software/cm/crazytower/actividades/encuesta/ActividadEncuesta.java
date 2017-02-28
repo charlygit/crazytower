@@ -1,7 +1,6 @@
 package software.cm.crazytower.actividades.encuesta;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,15 +13,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 
 import software.cm.crazytower.R;
+import software.cm.crazytower.actividades.ActividadBaseEncarga;
 import software.cm.crazytower.actividades.ActividadServicios;
-import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
 
-public class ActividadEncuesta extends FragmentActivity implements FragmentoEncuestaOpcionListener {
+public class ActividadEncuesta extends ActividadBaseEncarga implements FragmentoEncuestaOpcionListener {
     private static final int CANT_PAGINAS = 5;
     private ViewPager mPaginador;
     private PagerAdapter mPaginadorAdapter;
@@ -47,10 +46,6 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         this.mPaginador.beginFakeDrag();
 
         this.mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        //this.mProgressBar.setScaleY(2f);
-
-        /*this.mProgressBar.getProgressDrawable().setColorFilter(
-                Color.BLUE, android.graphics.PorterDuff.Mode.SRC_IN);*/
 
         this.mProgressBar.setMax(CANT_PAGINAS);
 
@@ -92,8 +87,7 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
         } else {
             // Se finaliza la accion de encuesta y se pasa a la accion que brinda servicios
             Intent mainIntent = new Intent(ActividadEncuesta.this, ActividadServicios.class);
-            ActividadEncuesta.this.startActivity(mainIntent);
-            ActividadEncuesta.this.finish();
+            this.cambiarActividadAtenti(mainIntent);
         }
     }
 
@@ -129,6 +123,12 @@ public class ActividadEncuesta extends FragmentActivity implements FragmentoEncu
 
             if (position == 0) {
                 fragmento = new FragmentoEncuestaInicio();
+
+                Bundle argumentos = new Bundle();
+                argumentos.putString(FragmentoEncuestaInicio.PARAM_IMAGEN,
+                        ActividadEncuesta.this.archivosDescargadosAtenti.getPathImagenHome());
+
+                fragmento.setArguments(argumentos);
             } else if (position == 1) {
                 fragmento = new FragmentoEncuestaOpcionesDinamicas();
 

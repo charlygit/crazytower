@@ -14,6 +14,7 @@ import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.CrazyTowerHome;
 
 public class FragmentoHomeVideo extends Fragment {
+    public static final String PARAM_VIDEO_URL = "urlVideo";
     private VideoView video;
 
     @Nullable
@@ -23,14 +24,7 @@ public class FragmentoHomeVideo extends Fragment {
                 R.layout.fragmento_actividad_home_video, container, false);
 
         this.video = (VideoView) rootView.findViewById(R.id.video_fragmento_home);
-        //String path1 = "http://techslides.com/demos/sample-videos/small.3gp";
-        //String path1 = "https://drive.google.com/file/d/0B9qY7Wb9busiQ190dWpOZWF3VFk/view";
-        //Uri uri = Uri.parse("android.resource://" + this.getActivity().getPackageName() + "/" + R.raw.small);
-        //Uri uri = Uri.parse(path1);
-
-
-        //Uri uri = Uri.parse("android.resource://" + this.getActivity().getPackageName() + "/" + R.raw.small);
-        String uriVideo = this.getArguments().getString("urlVideo");
+        String uriVideo = this.getArguments().getString(PARAM_VIDEO_URL);
         Uri uri = Uri.parse(uriVideo);
 
         this.video.setVideoURI(uri);
@@ -44,23 +38,6 @@ public class FragmentoHomeVideo extends Fragment {
         });
 
         return rootView;
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-       /* if (this.video != null) {
-            if (this.isVisible()) {
-                if (!isVisibleToUser) { // If we are becoming invisible, then...
-                    //pause or stop video
-                    //this.video.stopPlayback();
-                } else {
-                    //play your video
-                    this.video.start();
-                }
-            }
-        }*/
     }
 
     public void reproducirVideo() {

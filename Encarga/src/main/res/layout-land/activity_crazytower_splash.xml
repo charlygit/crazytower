@@ -20,7 +20,21 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="0px"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.05"/>
+
+
+        <TextView
+            android:text="TextView"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="0.1"
+            android:textAlignment="center"
+            android:id="@+id/labelDescarga" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="0.05"/>
 
         <software.cm.crazytower.componentes.TextProgressBar
             android:progressDrawable="@drawable/barra_progreso_circular"
@@ -29,7 +43,7 @@
             android:id="@+id/barraProgreso"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"/>
+            android:layout_weight="0.7"/>
 
         <Space
             android:layout_width="match_parent"

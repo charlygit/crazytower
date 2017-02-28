@@ -1,6 +1,5 @@
 package software.cm.crazytower.actividades;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,11 +10,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
+import android.webkit.URLUtil;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import software.cm.crazytower.R;
@@ -26,10 +28,20 @@ import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.helpers.UtilidadesAndroid;
 import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.helpers.UtilidadesInternet;
+import software.cm.crazytower.helpers.UtilidadesString;
+import software.cm.crazytower.modelo.ConfiguracionAtenti;
 
-public class CrazyTowerSplash extends Activity {
-    private final int SPLASH_DISPLAY_LENGTH = 1000;
+public class CrazyTowerSplash extends ActividadBaseEncarga {
+    private enum TipoDescarga {ARCHIVO_CONFIGURACION, IMAGEN_HOME, IMAGEN_FIN, IMAGEN, VIDEO, OTROS};
+    private static final String PLACEHOLDER_ID_DISPOSITIVO = "ID_DISPOSITIVO";
+    private static final String URL_BASE_ENCARGA = "http://www.web-coffee.net/otrasWeb/encarga/";
+    private static final String URL_ARCHIVO_CONFIGURACION = URL_BASE_ENCARGA + PLACEHOLDER_ID_DISPOSITIVO + "/configuracionDispositivo.json";
+    private static final String URL_DISPOSITIVOS = URL_BASE_ENCARGA + "dispositivos.txt";
+
+    private static TipoDescarga tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION;
+
     private TextProgressBar barraProgreso;
+    private TextView labelDescarga;
 
     private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
     /*private String[] urlsDescarga = {
@@ -38,23 +50,28 @@ public class CrazyTowerSplash extends Activity {
         "http://www.sernac.cl/wp-content/uploads/2015/12/Adidas.jpg"
     };*/
 
-    private ArrayList<Long> idsArchivosDescarga = new ArrayList<>();
-    private List<String> urlsDescarga =
-            new ArrayList<>(Arrays.asList("VideoClaro.3gp;http://server1.elgenero.com/cgi-bin/3gpv.cgi?file=Justin%20Quiles%20-%20SI%20Ella%20Quisiera.3gp"));
+    private Long idArchivoConfiguracion;
+    private ConfiguracionAtenti configuracionAtenti;
 
-    private List<String> urisArchivosDescargados = new ArrayList<>();
-    /** Called when the activity is first created. */
+    private Long idImagenHome;
+    private Long idImagenFin;
+    private ArrayList<Long> idsVideos = new ArrayList<>();
+    private ArrayList<Long> idsImagenes = new ArrayList<>();
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        String idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
-        Log.i("idDispositivo", idDispositivo);
+        //Log.i("Json", new GsonBuilder().create().toJson(new ConfiguracionAtenti(), ConfiguracionAtenti.class));
 
         setContentView(R.layout.activity_crazytower_splash);
 
         this.barraProgreso = (TextProgressBar) findViewById(R.id.barraProgreso);
         this.barraProgreso.setMax(100);
+
+        this.labelDescarga = (TextView) findViewById(R.id.labelDescarga);
+
+        this.encolarDescargaArchivoConfiguracion();
         /*DescargadorImagenes descargadorImagenes = new DescargadorImagenes(barraProgreso);
         descargadorImagenes.execute(this.urlsDescarga);*/
 
@@ -74,88 +91,263 @@ public class CrazyTowerSplash extends Activity {
                 CrazyTowerSplash.this.finish();
             }
         }, SPLASH_DISPLAY_LENGTH);*/
-        this.descargarArchivos();
+        //this.descargarArchivos();
     }
 
-    private void descargarArchivos() {
-        if (this.urlsDescarga == null || this.urlsDescarga.isEmpty()) {
-            Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
-
-            int cantArchivosDescargados = this.urisArchivosDescargados.size();
-            for (int i=0; i < cantArchivosDescargados; i++) {
-                mainIntent.putExtra("archivo" + i, this.urisArchivosDescargados.get(i));
-            }
-
-            CrazyTowerSplash.this.startActivity(mainIntent);
-            CrazyTowerSplash.this.finish();
-            return;
+    private boolean esDescargaAtenti(Long idArchivo) {
+        if (idArchivo == null) {
+            return false;
         }
 
-        String urlAtenti = this.urlsDescarga.remove(0);
-        this.barraProgreso.setProgress(0);
-        this.encolarDescarga(urlAtenti);
+        if (idArchivo.equals(this.idArchivoConfiguracion)) {
+            return true;
+        }
+
+        if (idArchivo.equals(this.idImagenHome)) {
+            return true;
+        }
+
+        if (idArchivo.equals(this.idImagenFin)) {
+            return true;
+        }
+
+        if (this.idsVideos.contains(idArchivo)) {
+            return true;
+        }
+
+        if (this.idsImagenes.contains(idArchivo)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void encolarDescargaArchivoConfiguracion() {
+        String idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
+        this.idArchivoConfiguracion = this.encolarDescarga(
+                URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, idDispositivo), "Descargando archivo de configuración");
+    }
+
+    private void encolarDescargaImagenHome() {
+        this.idImagenHome = this.encolarDescarga(this.configuracionAtenti.getUrlImagenInicio(), "Descargando imagen Home" );
+    }
+
+    private void encolarDescargaImagenFin() {
+        this.idImagenHome = this.encolarDescarga(this.configuracionAtenti.getUrlImagenFin(), "Descargando imagen Fin");
+    }
+
+    private void encolarDescargaImagen() {
+        if (this.configuracionAtenti.getUrlsImagen() != null && !this.configuracionAtenti.getUrlsImagen().isEmpty()) {
+            this.tipoDescarga = TipoDescarga.IMAGEN;
+            String proximaUrlADescargar = this.configuracionAtenti.getUrlsImagen().remove(0);
+            this.idsImagenes.add(this.encolarDescarga(proximaUrlADescargar, "Descargando imagen propaganda"));
+        } else {
+            this.encolarDescargaVideo();
+        }
+    }
+
+    private void encolarDescargaVideo() {
+        if (this.configuracionAtenti.getUrlsVideo() != null && !this.configuracionAtenti.getUrlsVideo().isEmpty()) {
+            this.tipoDescarga = TipoDescarga.VIDEO;
+            String proximaUrlADescargar = this.configuracionAtenti.getUrlsVideo().remove(0);
+            this.idsVideos.add(this.encolarDescarga(proximaUrlADescargar, "Descargando video propaganda"));
+        } else {
+            this.irAEncuesta();
+        }
+    }
+
+    private void irAEncuesta() {
+        Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
+        this.cambiarActividadAtenti(mainIntent);
     }
 
     private BroadcastReceiver descargaCompletaBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
+            try {
+                Long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0L);
 
-            // Descartamos la notificacion de un archivo descargado que no es de nuestra app
-            if (!CrazyTowerSplash.this.idsArchivosDescarga.contains(id)) {
-                return;
+                if (esDescargaAtenti(id)) {
+                    switch (CrazyTowerSplash.this.tipoDescarga) {
+                        case ARCHIVO_CONFIGURACION:
+                            procesarArchivoConfiguracion(id);
+                            break;
+                        case IMAGEN_HOME:
+                            procesarImagenHome(id);
+                            break;
+                        case IMAGEN_FIN:
+                            procesarImagenFin(id);
+                            break;
+                        case IMAGEN:
+                            procesarImagen(id);
+                            break;
+                        case VIDEO:
+                            procesarVideo(id);
+                            break;
+                    }
+                }
+            } catch (Exception excepcionGeneral) {
+                Toast.makeText(CrazyTowerSplash.this, "Se produjo un error durante la descarga de un archivo", Toast.LENGTH_LONG);
             }
-
-            DownloadManager downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            DownloadManager.Query query = new DownloadManager.Query();
-            query.setFilterById(id);
-            Cursor cursor = downloadManager.query(query);
-
-            // Si es vacio se corta la ejecucion y se loguea el error
-            if (!cursor.moveToFirst()) {
-                CrazyTowerSplash.this.descargarArchivos();
-                Log.w("DescargaArchivos", "Cursor vacio");
-                return;
-            }
-
-            int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-            if (DownloadManager.STATUS_SUCCESSFUL != cursor.getInt(statusIndex)) {
-                CrazyTowerSplash.this.descargarArchivos();
-                Log.w("DescargaArchivos", "Download Failed");
-                return;
-            }
-
-            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
-            String uriArchivoDescargado = cursor.getString(uriIndex);
-            CrazyTowerSplash.this.urisArchivosDescargados.add(uriArchivoDescargado);
-            CrazyTowerSplash.this.descargarArchivos();
         }
     };
 
-    private void encolarDescarga(String urlAtenti) {
-        String nombreArchivo = urlAtenti.split(";")[0];
-        String url = urlAtenti.split(";")[1];
+    private Cursor validarArchivoDescargado(Long id) throws ExcepcionGeneral {
+        DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(id);
+        Cursor cursor = downloadManager.query(query);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+        // Si es vacio se corta la ejecucion y se loguea el error
+        if (!cursor.moveToFirst()) {
+            Log.w("DescargaArchivos", "Cursor vacio");
+            throw new ExcepcionGeneral("Cursor vacío");
+        }
 
-        // only download via WIFI
-        request.setTitle("Descarga video claro");
-        request.setDescription("Descarga de contenido Atenti");
+        int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+        if (DownloadManager.STATUS_SUCCESSFUL != cursor.getInt(statusIndex)) {
+            Log.w("DescargaArchivos", "Download Failed");
+            throw new ExcepcionGeneral("Error al descargar el archivo");
+        }
 
-        // we just want to download silently
-        request.setVisibleInDownloadsUi(false);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-        //request.setDestinationInExternalFilesDir(this, null, nombreArchivo);
-
-        // enqueue this request
-        final DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-        final long idArchivoDescarga = downloadManager.enqueue(request);
-        this.idsArchivosDescarga.add(idArchivoDescarga);
-
-        this.definirBarraProgreso(downloadManager, idArchivoDescarga);
+        return cursor;
     }
 
-    private void definirBarraProgreso(final DownloadManager downloadManager, final long idArchivoDescarga) {
+    private void finalizarDescarga(Cursor cursor) {
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    private void procesarArchivoConfiguracion(Long id) {
+        Cursor cursor = null;
+
+        try {
+            cursor = this.validarArchivoDescargado(id);
+
+            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+            String uriArchivoConfiguracion = cursor.getString(uriIndex);
+
+            String archivoConfJson = UtilidadesArchivo.leerArchivoDesdeURI(uriArchivoConfiguracion);
+            this.configuracionAtenti = new GsonBuilder().create().fromJson(archivoConfJson, ConfiguracionAtenti.class);
+
+            if (UtilidadesString.esVacioTexto(this.configuracionAtenti.getUrlImagenInicio()) ||
+                    UtilidadesString.esVacioTexto(this.configuracionAtenti.getUrlImagenFin())) {
+                Toast.makeText(this, "Las imagenes de inicio y fin son requeridas para el funcionamiento del sistema", Toast.LENGTH_LONG);
+                return;
+            }
+
+            if ((this.configuracionAtenti.getUrlsImagen() == null || this.configuracionAtenti.getUrlsImagen().isEmpty()) &&
+                    (this.configuracionAtenti.getUrlsVideo() == null || this.configuracionAtenti.getUrlsVideo().isEmpty())) {
+                Toast.makeText(this, "Se necesita al menos una imagen o video de propaganda para el funcionamiento del sistema", Toast.LENGTH_LONG);
+                return;
+            }
+
+            this.tipoDescarga = TipoDescarga.IMAGEN_HOME;
+            this.encolarDescargaImagenHome();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Toast.makeText(this, "Se produjo un error durante la descarga del archivo de configuracion", Toast.LENGTH_LONG);
+        } finally {
+            finalizarDescarga(cursor);
+        }
+    }
+
+    private void procesarImagenHome(Long id) {
+        Cursor cursor = null;
+
+        try {
+            cursor = this.validarArchivoDescargado(id);
+
+            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+            String urlImagenHome = cursor.getString(uriIndex);
+            this.archivosDescargadosAtenti.setPathImagenHome(urlImagenHome);
+
+            this.tipoDescarga = TipoDescarga.IMAGEN_FIN;
+            this.encolarDescargaImagenFin();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Toast.makeText(this, "Se produjo un error durante la descarga de la imagen de la home", Toast.LENGTH_LONG);
+        } finally {
+            finalizarDescarga(cursor);
+        }
+    }
+
+    private void procesarImagenFin(Long id) {
+        Cursor cursor = null;
+
+        try {
+            cursor = this.validarArchivoDescargado(id);
+
+            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+            String urlImagenFin = cursor.getString(uriIndex);
+            this.archivosDescargadosAtenti.setPathImagenFin(urlImagenFin);
+
+            this.encolarDescargaImagen();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Toast.makeText(this, "Se produjo un error durante la descarga de la imagen de fin", Toast.LENGTH_LONG);
+        } finally {
+            finalizarDescarga(cursor);
+        }
+    }
+
+    private void procesarImagen(Long id) {
+        Cursor cursor = null;
+
+        try {
+            cursor = this.validarArchivoDescargado(id);
+
+            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+            String urlPathImagen = cursor.getString(uriIndex);
+            this.archivosDescargadosAtenti.agregarPathImagen(urlPathImagen);
+
+            // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
+            this.encolarDescargaImagen();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Toast.makeText(this, "Se produjo un error durante la descarga de una imagen de propaganda", Toast.LENGTH_LONG);
+        } finally {
+            finalizarDescarga(cursor);
+        }
+    }
+
+    private void procesarVideo(Long id) {
+        Cursor cursor = null;
+
+        try {
+            cursor = this.validarArchivoDescargado(id);
+
+            int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
+            String urlVideo = cursor.getString(uriIndex);
+            this.archivosDescargadosAtenti.agregarPathVideo(urlVideo);
+
+            // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
+            this.encolarDescargaVideo();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            excepcionGeneral.printStackTrace();
+        } finally {
+            finalizarDescarga(cursor);
+        }
+    }
+
+    private Long encolarDescarga(String url, String tituloDescarga) {
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+        String nombreArchivo = URLUtil.guessFileName(url, null, null);
+        request.setTitle(nombreArchivo);
+        request.setDescription("Descarga de contenido Atenti");
+
+        request.setVisibleInDownloadsUi(false);
+        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+
+        final DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        final long idArchivoDescarga = downloadManager.enqueue(request);
+
+        this.definirBarraProgreso(downloadManager, idArchivoDescarga, tituloDescarga);
+
+        return (idArchivoDescarga);
+    }
+
+    private void definirBarraProgreso(final DownloadManager downloadManager, final long idArchivoDescarga, final String tituloDescarga) {
+        this.labelDescarga.setText(tituloDescarga);
+
         new Thread(new Runnable() {
             @Override
             public void run() {

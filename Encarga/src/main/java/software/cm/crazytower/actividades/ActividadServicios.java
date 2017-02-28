@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.CompoundButton;
@@ -20,12 +18,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import software.cm.crazytower.R;
-import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
 import software.cm.crazytower.arduino.ControladorArduino;
-import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.helpers.APManager;
 
-public class ActividadServicios extends AppCompatActivity {
+public class ActividadServicios extends ActividadBaseEncarga {
     private static final Long TIEMPO_VUELTA_HOME = 1000L * 60L;
     private static final String ACCION_CAMBIO_ESTADO_ANCLAJE_RED = "android.net.wifi.WIFI_AP_STATE_CHANGED";
     private static final String ACCION_CAMBIO_ANCLAJE_RED = "android.net.conn.TETHER_STATE_CHANGED";
@@ -79,8 +75,7 @@ public class ActividadServicios extends AppCompatActivity {
             @Override
             public void run() {
                 Intent mainIntent = new Intent(ActividadServicios.this, CrazyTowerHome.class);
-                ActividadServicios.this.startActivity(mainIntent);
-                ActividadServicios.this.finish();
+                ActividadServicios.this.cambiarActividadAtenti(mainIntent);
             }
         };
         this.handler.postDelayed(runnable, TIEMPO_VUELTA_HOME);
@@ -89,8 +84,7 @@ public class ActividadServicios extends AppCompatActivity {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Intent mainIntent = new Intent(ActividadServicios.this, CrazyTowerHome.class);
-        this.startActivity(mainIntent);
-        this.finish();
+        this.cambiarActividadAtenti(mainIntent);
 
         return super.onTouchEvent(event);
     }
@@ -184,8 +178,7 @@ public class ActividadServicios extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Intent mainIntent = new Intent(ActividadServicios.this, CrazyTowerHome.class);
-                                    ActividadServicios.this.startActivity(mainIntent);
-                                    ActividadServicios.this.finish();
+                                    ActividadServicios.this.cambiarActividadAtenti(mainIntent);
                                 }
                             }, (TIEMPO_VUELTA_HOME / 120L));
                         }

@@ -2,30 +2,19 @@ package software.cm.crazytower.actividades;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageSwitcher;
-import android.widget.ImageView;
-import android.widget.ViewSwitcher;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -33,86 +22,47 @@ import software.cm.crazytower.R;
 import software.cm.crazytower.actividades.encuesta.ActividadEncuesta;
 import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
-import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeImagen;
 import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeVideo;
-import software.cm.crazytower.errores.ExcepcionGeneral;
-import software.cm.crazytower.helpers.Constantes;
-import software.cm.crazytower.helpers.UtilidadesArchivo;
 import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
-public class CrazyTowerHome extends FragmentActivity {
-    // Variables de control del visor de propagandas
-    private int nroImagen;
-    private ImageSwitcher imageSwitcher;
-    private static final Integer DURACION_IMAGEN_MS = 8000;
-    private int[] galeriaEstatica = {R.drawable.imagen_ikea};
-    private List<Bitmap> imagenes;
+public class CrazyTowerHome extends ActividadBaseEncarga {
     private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
     private ViewPager mPaginador;
     private FragmentPagerAdapter mPaginadorAdapter;
-    private static final int cantPaginas = 2;
+    private int cantPaginas;
     private int paginaActual = 0;
-
-    String uriVideo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.uriVideo = getIntent().getExtras().getString("archivo0");
+        this.cantPaginas = this.archivosDescargadosAtenti.getPathImagenes().size() +
+                this.archivosDescargadosAtenti.getPathVideos().size();
 
         setContentView(R.layout.activity_crazytower_homescreen);
 
-        // Iniciar el visor de propagandas
-        //this.iniciarImageSwitcher();
-
         this.mPaginador = (ViewPager) findViewById(R.id.pagerHome);
-        this.mPaginador.setOffscreenPageLimit(10);
+        this.mPaginador.setOffscreenPageLimit(this.cantPaginas);
         this.mPaginador.addOnPageChangeListener(new HomePageOnPageChangeListener());
         this.mPaginadorAdapter = new HomePageAdapter(getSupportFragmentManager());
         this.mPaginador.setAdapter(mPaginadorAdapter);
         this.mPaginador.beginFakeDrag();
 
-        //this.mPaginador.setCurrentItem(0);
         // Inicia el servicio de monitoreo de conexiones
         this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
-
-        this.imagenes = new ArrayList<>();
 
         // Inicia y registra arduino broadcast receiver
         this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
         IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
 
         registerReceiver(this.broadcastReceiverConexionSerial, filter);
-
-        /*Bitmap bitmap;
-
-        for (int i=0; i < 3; i++) {
-            bitmap = this.cargarImagen(i);
-
-            if (bitmap != null) {
-                this.imagenes.add(bitmap);
-            }
-        }*/
-    }
-
-    private Bitmap cargarImagen(int nroImagen) {
-        try {
-            String nombreArchivo = String.format("%s_%s", Constantes.PREFIJO_NOMBRE_ARCHIVO_IMAGEN_HOME, nroImagen);
-            return (UtilidadesArchivo.cargarArchivo(CrazyTowerHome.this, nombreArchivo));
-        } catch (ExcepcionGeneral excepcionGeneral) {
-            Log.e(CrazyTowerSplash.class.getSimpleName(), excepcionGeneral.getMessage());
-
-            return null;
-        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Intent mainIntent = new Intent(CrazyTowerHome.this, ActividadEncuesta.class);
-        CrazyTowerHome.this.startActivity(mainIntent);
-        CrazyTowerHome.this.finish();
+        this.cambiarActividadAtenti(mainIntent);
 
         return super.onTouchEvent(event);
     }
@@ -136,53 +86,6 @@ public class CrazyTowerHome extends FragmentActivity {
         super.onDestroy();
 
         unregisterReceiver(this.broadcastReceiverConexionSerial);
-    }
-
-    // ----------
-    // AUXILIARES
-    // ----------
-    private void iniciarImageSwitcher() {
-        this.imageSwitcher = null; //(ImageSwitcher) findViewById(R.id.imageSwitcher);
-        this.imageSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            public View makeView() {
-                ImageView imageView = new ImageView(CrazyTowerHome.this);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                return imageView;
-            }
-        });
-
-        this.imageSwitcher.postDelayed(new Runnable() {
-            public void run() {
-                CrazyTowerHome.this.definirImagen(nroImagen++);
-
-                if (nroImagen == CrazyTowerHome.this.obtenerCantidadImagenes()) {
-                    nroImagen = 0;
-                }
-                imageSwitcher.postDelayed(this, DURACION_IMAGEN_MS);
-            }
-        }, 0);
-
-        // Se definen las animaciones de entrada y de salida de las imagenes
-        Animation fadeIn = AnimationUtils.loadAnimation(this, R.anim.fade_in);
-        Animation fadeOut = AnimationUtils.loadAnimation(this, R.anim.fade_out);
-        imageSwitcher.setInAnimation(fadeIn);
-        imageSwitcher.setOutAnimation(fadeOut);
-    }
-
-    private void definirImagen(int nroImagen) {
-        if (this.imagenes.isEmpty()) {
-            this.imageSwitcher.setImageResource(this.galeriaEstatica[nroImagen]);
-        } else {
-            this.imageSwitcher.setImageDrawable(new BitmapDrawable(getResources(), CrazyTowerHome.this.imagenes.get(nroImagen)));
-        }
-    }
-
-    private int obtenerCantidadImagenes() {
-        if (this.imagenes.isEmpty()) {
-            return (this.galeriaEstatica.length);
-        } else {
-            return (this.imagenes.size());
-        }
     }
 
     public void cambiarPagina() {
@@ -230,28 +133,53 @@ public class CrazyTowerHome extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if (position == 0) {
-                Bundle argumentos = new Bundle();
-                argumentos.putString("urlVideo", CrazyTowerHome.this.uriVideo);
-
-                FragmentoHomeVideo fragmentoHomeVideo = new FragmentoHomeVideo();
-                fragmentoHomeVideo.setArguments(argumentos);
-
-                return fragmentoHomeVideo;
-            } else {
-                Bundle argumentos = new Bundle();
-                argumentos.putString("urlImagen", CrazyTowerHome.this.uriVideo);
-
-                FragmentoHomeImagen fragmentoHomeImagen = new FragmentoHomeImagen();
-                fragmentoHomeImagen.setArguments(argumentos);
-
-                return fragmentoHomeImagen;
+            // Si no hay imagenes, solo se muestran videos (tiene que haber al menos uno)
+            if (CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().isEmpty()) {
+                return this.crearFragmentoVideo(
+                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().get(position));
             }
+
+            // Si no hay videos, solo se muestran imagenes (tiene que haber al menos una)
+            if (CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().isEmpty()) {
+                return this.crearFragmentoImagen(
+                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().get(position));
+            }
+
+            boolean esImagen = position % 2 == 0;
+            if (esImagen) {
+                return this.crearFragmentoImagen(
+                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().get(position / 2));
+            } else {
+                return this.crearFragmentoVideo(
+                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().get(position/2));
+            }
+        }
+
+        @NonNull
+        private Fragment crearFragmentoImagen(String imagen) {
+            Bundle argumentos = new Bundle();
+            argumentos.putString(FragmentoHomeImagen.PARAM_IMAGEN_URL, imagen);
+
+            FragmentoHomeImagen fragmentoHomeImagen = new FragmentoHomeImagen();
+            fragmentoHomeImagen.setArguments(argumentos);
+
+            return fragmentoHomeImagen;
+        }
+
+        @NonNull
+        private Fragment crearFragmentoVideo(String video) {
+            Bundle argumentos = new Bundle();
+            argumentos.putString(FragmentoHomeVideo.PARAM_VIDEO_URL, video);
+
+            FragmentoHomeVideo fragmentoHomeVideo = new FragmentoHomeVideo();
+            fragmentoHomeVideo.setArguments(argumentos);
+
+            return fragmentoHomeVideo;
         }
 
         @Override
         public int getCount() {
-            return 2;
+            return CrazyTowerHome.this.cantPaginas;
         }
 
         @Override

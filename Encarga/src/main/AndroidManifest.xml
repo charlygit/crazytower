@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <uses-feature android:name="android.hardware.usb.host" />
 
@@ -19,7 +19,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar.Fullscreen">
-        <!--android:theme="@style/AppTheme">-->
+
+        <!-- android:theme="@style/AppTheme"> -->
 
         <service
             android:name=".servicios.ServicioMonitoreoConexiones"
@@ -38,7 +39,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
@@ -55,11 +55,14 @@
             android:name=".actividades.CrazyTowerHome"
             android:label="@string/app_name"
             android:screenOrientation="sensorLandscape">
-            <!--<intent-filter>
+
+            <!--
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
 
         <!-- ******** -->
@@ -67,7 +70,7 @@
         <!-- ******** -->
         <activity
             android:name=".actividades.encuesta.ActividadEncuesta"
-            android:screenOrientation="sensorLandscape"></activity>
+            android:screenOrientation="sensorLandscape" />
 
         <!-- ********* -->
         <!-- SERVICIOS -->
@@ -75,14 +78,17 @@
         <activity
             android:name=".actividades.ActividadServicios"
             android:label="@string/title_activity_actividad_servicios"
-            android:screenOrientation="sensorLandscape"></activity>
+            android:screenOrientation="sensorLandscape" />
 
-        <!--<activity
+        <!--
+        <activity
             android:name=".actividades.FullscreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
-        </activity>-->
+        </activity>
+        -->
+        <activity android:name=".actividades.ActividadBaseEncarga"></activity>
     </application>
 
 </manifest>
