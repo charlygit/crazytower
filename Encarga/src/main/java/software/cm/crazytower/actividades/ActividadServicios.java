@@ -48,14 +48,21 @@ public class ActividadServicios extends ActividadBaseEncarga {
     private boolean isBtConnected = false;
 
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    static final String MAC_ARDUINO = "MAC";
+    static final String MAC_ARDUINO = "20:16:08:04:79:10";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_servicios);
 
-        new ConnectBT().execute(); //Call the class to connect
+        myBluetooth = BluetoothAdapter.getDefaultAdapter(); //get the mobile bluetooth device
+        BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(MAC_ARDUINO);
+
+        if (dispositivo.getBondState() == BluetoothDevice.BOND_NONE) {
+            new ConnectBT().execute(); //Call the class to connect
+        }
+
+
 
         this.anclajeRedReceiver = new AnclajeRedReceiver();
 

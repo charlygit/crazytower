@@ -124,8 +124,15 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
     private void encolarDescargaArchivoConfiguracion() {
         String idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
+        Toast.makeText(getApplicationContext(), idDispositivo, Toast.LENGTH_LONG);
+
         this.idArchivoConfiguracion = this.encolarDescarga(
                 URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, idDispositivo), "Descargando archivo de configuración");
+    }
+
+    private void encolarDescargaArchivoConfiguracionDefault() {
+        this.idArchivoConfiguracion = this.encolarDescarga(
+                 URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, "default"), "Descargando archivo de configuración default");
     }
 
     private void encolarDescargaImagenHome() {
@@ -247,6 +254,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
             this.encolarDescargaImagenHome();
         } catch (ExcepcionGeneral excepcionGeneral) {
             Toast.makeText(this, "Se produjo un error durante la descarga del archivo de configuracion", Toast.LENGTH_LONG);
+            this.encolarDescargaArchivoConfiguracionDefault();
         } finally {
             finalizarDescarga(cursor);
         }
@@ -365,6 +373,11 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
                     if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                         downloading = false;
+                    } else if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_FAILED) {
+                        if (idArchivoConfiguracion.equals(idArchivoDescarga)) {
+                            downloading = false;
+                            //encolarDescargaArchivoConfiguracionDefault();
+                        }
                     }
 
                     final int progresoDescarga = (int) ((bytes_downloaded * 100l) / bytes_total);
