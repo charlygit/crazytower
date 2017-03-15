@@ -1,6 +1,7 @@
 package software.cm.crazytower.arduino;
 
 import android.app.PendingIntent;
+import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.felhr.usbserial.UsbSerialDevice;
 import com.felhr.usbserial.UsbSerialInterface;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -59,6 +61,10 @@ public class ControladorArduino {
         enviarDatos(contexto, dato);
     }
 
+    public static void habilitarPuerto(Context contexto, BluetoothSocket btSocket, String dato) {
+        enviarDatos(contexto, btSocket, dato);
+    }
+
     private static void enviarDatos(Context contexto, String datos) {
         try {
             contextoStatic = contexto;
@@ -77,6 +83,16 @@ public class ControladorArduino {
             }
         } catch (Exception e) {
             //Toast.makeText(contexto, "Se produjo un error enviando datos a Arduino", //Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private static void enviarDatos(Context contexto, BluetoothSocket btSocket, String datos) {
+        if (btSocket != null) {
+            try {
+                btSocket.getOutputStream().write(datos.toString().getBytes());
+            } catch (IOException e) {
+                Toast.makeText(contexto, "No se pueden enviar datos a Arduino (puerto serial nulo)", Toast.LENGTH_LONG).show();
+            }
         }
     }
 
