@@ -2,23 +2,17 @@ package software.cm.crazytower.servicios;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
-import android.os.ResultReceiver;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import software.cm.crazytower.componentes.ListaNodosReceptor;
-import software.cm.crazytower.componentes.Receptor;
 import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.modelo.Nodo;
 
 public class ServicioMonitoreoConexiones extends Service {
@@ -36,10 +30,10 @@ public class ServicioMonitoreoConexiones extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.i(ServicioMonitoreoConexiones.class.getSimpleName(), "Se invoca a onStartCommand");
+        Log.i(Constantes.TAG, "Se invoca a onStartCommand");
 
         if (!this.enEjecucion) {
-            Log.i(ServicioMonitoreoConexiones.class.getSimpleName(), "Se crea la tarea para monitorear las conexiones");
+            Log.i(Constantes.TAG, "Se crea la tarea para monitorear las conexiones");
 
             new Timer().schedule(
                     new TareaChequeoUsuarioConectadosWifi(),
@@ -49,6 +43,7 @@ public class ServicioMonitoreoConexiones extends Service {
             this.enEjecucion = true;
         }
 
+        Toast.makeText(this, "Se iniciar el servicio de conexiones", Toast.LENGTH_LONG).show();
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -68,12 +63,12 @@ public class ServicioMonitoreoConexiones extends Service {
             Date fechaAhora = new Date();
 
             if (fechaAhora.getTime() - this.fechaUltimaModificacionContrasenia.getTime() >= TIEMPO_CAMBIO_CONTRASENIA) {
-                Log.i(TareaChequeoUsuarioConectadosWifi.class.getSimpleName(), "La contraseña debe cambiar porque caducó");
+                Log.i(Constantes.TAG, "La contraseña debe cambiar porque caducó");
 
                 ArrayList<Nodo> listaNodosConectados = new ArrayList<>(APManager.leerTablaARP());
 
                 if (listaNodosConectados.isEmpty()) {
-                    Log.i(TareaChequeoUsuarioConectadosWifi.class.getSimpleName(), "Se recrea la conexión con nueva contraseña");
+                    Log.i(Constantes.TAG, "Se recrea la conexión con nueva contraseña");
 
                     APManager.recrearContrasenia(ServicioMonitoreoConexiones.this);
 
@@ -81,14 +76,14 @@ public class ServicioMonitoreoConexiones extends Service {
                             new TareaChequeoUsuarioConectadosWifi(),
                             TIEMPO_CAMBIO_CONTRASENIA);
                 } else {
-                    Log.i(TareaChequeoUsuarioConectadosWifi.class.getSimpleName(), "Como hay usuarios conectados se espera para el cambio de contraseña");
+                    Log.i(Constantes.TAG, "Como hay usuarios conectados se espera para el cambio de contraseña");
 
                     new Timer().schedule(
                             new TareaChequeoUsuarioConectadosWifi(this.fechaUltimaModificacionContrasenia),
                             INTERVALO_ENTRE_EJECUCION_TAREA);
                 }
             } else {
-                Log.i(TareaChequeoUsuarioConectadosWifi.class.getSimpleName(), "Se mantiene la contraseña porque aún no caducó");
+                Log.i(Constantes.TAG, "Se mantiene la contraseña porque aún no caducó");
 
                 new Timer().schedule(
                     new TareaChequeoUsuarioConectadosWifi(this.fechaUltimaModificacionContrasenia),

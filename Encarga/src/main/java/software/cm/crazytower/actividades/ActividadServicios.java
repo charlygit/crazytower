@@ -1,15 +1,14 @@
 package software.cm.crazytower.actividades;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.CompoundButton;
@@ -17,15 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.UUID;
 
 import software.cm.crazytower.R;
 import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.servicios.ServicioBluetooth;
 
 public class ActividadServicios extends ActividadBaseEncarga {
     private static final Long TIEMPO_VUELTA_HOME = 1000L * 60L;
@@ -43,30 +41,15 @@ public class ActividadServicios extends ActividadBaseEncarga {
     private Handler handler;
     private Runnable runnable;
 
-    BluetoothAdapter myBluetooth = null;
-    BluetoothSocket btSocket = null;
-    private boolean isBtConnected = false;
-
-    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    static final String MAC_ARDUINO = "20:16:08:04:79:10";
+    private ServicioBluetooth servicioBluetooth;
+    private boolean bindingEstablecido = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.actividad_servicios);
 
-        myBluetooth = BluetoothAdapter.getDefaultAdapter(); //get the mobile bluetooth device
-        BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(MAC_ARDUINO);
-
-        if (dispositivo.getBondState() == BluetoothDevice.BOND_NONE) {
-            new ConnectBT().execute(); //Call the class to connect
-        }
-
-
-
         this.anclajeRedReceiver = new AnclajeRedReceiver();
-
-        // ControladorArduino.habilitarPuerto(this);
 
         boton0 = (ToggleButton) findViewById(R.id.usb0);
         boton1 = (ToggleButton) findViewById(R.id.usb1);
@@ -77,9 +60,8 @@ public class ActividadServicios extends ActividadBaseEncarga {
 
         for (ToggleButton boton : botonesCarga) {
             boton.setOnCheckedChangeListener(checkGeneralBotonListener);
+            boton.setEnabled(false);
         }
-
-        // Botones de carga
 
         new Handler().postDelayed(new Runnable(){
             @Override
@@ -120,7 +102,44 @@ public class ActividadServicios extends ActividadBaseEncarga {
         }
 
         this.mostrarMensajeContraseña();
+
+        Intent intent = new Intent(this.getApplicationContext(), ServicioBluetooth.class);
+        boolean binding = bindService(intent, mConnection, BIND_IMPORTANT);
+
+        if (!binding) {
+            Toast.makeText(
+                    ActividadServicios.this,
+                    "Por el momento la función de carga de dispositivos se encuentra desactivada.",
+                    Toast.LENGTH_LONG).show();
+        }
     }
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            ServicioBluetooth.LocalBinder binder = (ServicioBluetooth.LocalBinder) service;
+            servicioBluetooth = binder.obtenerServicio();
+            bindingEstablecido = true;
+
+            if (!servicioBluetooth.hayConexionBluetoothEstablecida()) {
+                List<ToggleButton> botonesCarga = Arrays.asList(boton0, boton1, boton2, boton3);
+
+                for (ToggleButton boton : botonesCarga) {
+                    boton.setEnabled(servicioBluetooth.hayConexionBluetoothEstablecida());
+                }
+
+                Toast.makeText(
+                        ActividadServicios.this,
+                        "Por el momento la función de carga de dispositivos se encuentra desactivada.",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            bindingEstablecido = false;
+        }
+    };
 
     private void mostrarMensajeContraseña() {
         TextView textoClaveWifi = (TextView) this.findViewById(R.id.idMensajeClaveWifi);
@@ -159,6 +178,11 @@ public class ActividadServicios extends ActividadBaseEncarga {
             unregisterReceiver(this.anclajeRedReceiver);
             this.anclajeRedReceiverRegistrado = false;
         }
+
+        if (bindingEstablecido) {
+            unbindService(mConnection);
+            bindingEstablecido = false;
+        }
     }
 
     class AnclajeRedReceiver extends BroadcastReceiver {
@@ -190,7 +214,7 @@ public class ActividadServicios extends ActividadBaseEncarga {
 
                         if (datoAEnviar != null) {
                             //Toast.makeText(ActividadServicios.this, "Se envía el dato: " + datoAEnviar, Toast.LENGTH_SHORT).show();
-                            ControladorArduino.habilitarPuerto(ActividadServicios.this, btSocket, datoAEnviar);
+                            ControladorArduino.habilitarPuerto(ActividadServicios.this, servicioBluetooth.obtenerSocketBluetooth(), datoAEnviar);
 
                             if (ActividadServicios.this.handler != null && ActividadServicios.this.runnable != null) {
                                 ActividadServicios.this.handler.removeCallbacks(ActividadServicios.this.runnable);
@@ -247,56 +271,6 @@ public class ActividadServicios extends ActividadBaseEncarga {
             return null;
         }
     };
-
-    private void desconectarSocketBT()
-    {
-        if (btSocket!=null) //If the btSocket is busy
-        {
-            try
-            {
-                btSocket.close(); //close connection
-            }
-            catch (IOException e)
-            { msg("Error");}
-        }
-        finish(); //return to the first layout
-
-    }
-
-    private class ConnectBT extends AsyncTask<Void, Void, Void>  {
-        private boolean ConnectSuccess = true;
-
-        @Override
-        protected Void doInBackground(Void... devices) {
-            try {
-                if (btSocket == null || !isBtConnected) {
-                    myBluetooth = BluetoothAdapter.getDefaultAdapter(); //get the mobile bluetooth device
-                    BluetoothDevice dispositivo = myBluetooth.getRemoteDevice(MAC_ARDUINO); //connects to the device's address and checks if it's available
-                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID); //create a RFCOMM (SPP) connection
-                    BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    btSocket.connect();//start connection
-                }
-            }
-            catch (IOException e) {
-                ConnectSuccess = false;//if the try failed, you can check the exception here
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-            if (!ConnectSuccess) {
-                msg("Connection Failed. Is it a SPP Bluetooth? Try again.");
-                finish();
-            }
-            else {
-                msg("Connected");
-                isBtConnected = true;
-            }
-        }
-    }
 
     private void msg(String s) {
         Toast.makeText(getApplicationContext(),s,Toast.LENGTH_LONG).show();

@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import software.cm.crazytower.modelo.ArchivosDescargadosAtenti;
 
-public abstract class ActividadBaseEncarga extends FragmentActivity {
+public class ActividadBaseEncarga extends FragmentActivity {
     protected static final String PARAM_DATOS_DESCARGADOS = "archivosAtenti";
     protected ArchivosDescargadosAtenti archivosDescargadosAtenti;
 

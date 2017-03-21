@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Encarga/Encarga.iml" filepath="$PROJECT_DIR$/Encarga/Encarga.iml" />
-      <module fileurl="file://$PROJECT_DIR$/crazytower.iml" filepath="$PROJECT_DIR$/crazytower.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Encarga.iml" filepath="$PROJECT_DIR$/Encarga.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Encarga/Encarga-Encarga.iml" filepath="$PROJECT_DIR$/Encarga/Encarga-Encarga.iml" />
     </modules>
   </component>
 </project>

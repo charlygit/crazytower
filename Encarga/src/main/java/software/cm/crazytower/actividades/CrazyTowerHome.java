@@ -50,7 +50,8 @@ public class CrazyTowerHome extends ActividadBaseEncarga {
         this.mPaginador.beginFakeDrag();
 
         // Inicia el servicio de monitoreo de conexiones
-        this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
+        // Todo: Eliminar comentario del servicio
+        //this.startService(new Intent(this, ServicioMonitoreoConexiones.class));
 
         // Inicia y registra arduino broadcast receiver
         this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();

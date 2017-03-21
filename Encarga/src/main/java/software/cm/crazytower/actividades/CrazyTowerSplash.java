@@ -32,23 +32,16 @@ import software.cm.crazytower.helpers.UtilidadesString;
 import software.cm.crazytower.modelo.ConfiguracionAtenti;
 
 public class CrazyTowerSplash extends ActividadBaseEncarga {
-    private enum TipoDescarga {ARCHIVO_CONFIGURACION, IMAGEN_HOME, IMAGEN_FIN, IMAGEN, VIDEO, OTROS};
+    private enum TipoDescarga {ARCHIVO_CONFIGURACION_DISPOSITIVO, ARCHIVO_CONFIGURACION_DEFAULT, IMAGEN_HOME, IMAGEN_FIN, IMAGEN, VIDEO, OTROS};
     private static final String PLACEHOLDER_ID_DISPOSITIVO = "ID_DISPOSITIVO";
     private static final String URL_BASE_ENCARGA = "http://www.web-coffee.net/otrasWeb/encarga/";
     private static final String URL_ARCHIVO_CONFIGURACION = URL_BASE_ENCARGA + PLACEHOLDER_ID_DISPOSITIVO + "/configuracionDispositivo.json";
     private static final String URL_DISPOSITIVOS = URL_BASE_ENCARGA + "dispositivos.txt";
 
-    private static TipoDescarga tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION;
+    private static TipoDescarga tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION_DISPOSITIVO;
 
     private TextProgressBar barraProgreso;
     private TextView labelDescarga;
-
-    private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;
-    /*private String[] urlsDescarga = {
-        "http://nine9.com/wp-content/uploads/2016/06/nike_justdoit_00.jpg",
-        "http://hlgstudios.com/wp-content/uploads/2011/09/reebok_logo_transparent.png",
-        "http://www.sernac.cl/wp-content/uploads/2015/12/Adidas.jpg"
-    };*/
 
     private Long idArchivoConfiguracion;
     private ConfiguracionAtenti configuracionAtenti;
@@ -62,8 +55,6 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-        //Log.i("Json", new GsonBuilder().create().toJson(new ConfiguracionAtenti(), ConfiguracionAtenti.class));
-
         setContentView(R.layout.activity_crazytower_splash);
 
         this.barraProgreso = (TextProgressBar) findViewById(R.id.barraProgreso);
@@ -71,7 +62,11 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
         this.labelDescarga = (TextView) findViewById(R.id.labelDescarga);
 
-        this.encolarDescargaArchivoConfiguracion();
+        try {
+            this.encolarDescargaArchivoConfiguracion();
+        } catch (ExcepcionGeneral excepcionGeneral) {
+            Log.e("EncargaApp", "onCreate: No se pudo descargar el archivo de configuracion", excepcionGeneral);
+        }
         /*DescargadorImagenes descargadorImagenes = new DescargadorImagenes(barraProgreso);
         descargadorImagenes.execute(this.urlsDescarga);*/
 
@@ -122,7 +117,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
         return false;
     }
 
-    private void encolarDescargaArchivoConfiguracion() {
+    private void encolarDescargaArchivoConfiguracion() throws ExcepcionGeneral {
         String idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
         Toast.makeText(getApplicationContext(), idDispositivo, Toast.LENGTH_LONG);
 
@@ -130,20 +125,20 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
                 URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, idDispositivo), "Descargando archivo de configuración");
     }
 
-    private void encolarDescargaArchivoConfiguracionDefault() {
+    private void encolarDescargaArchivoConfiguracionDefault() throws ExcepcionGeneral {
         this.idArchivoConfiguracion = this.encolarDescarga(
                  URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, "default"), "Descargando archivo de configuración default");
     }
 
-    private void encolarDescargaImagenHome() {
+    private void encolarDescargaImagenHome() throws ExcepcionGeneral {
         this.idImagenHome = this.encolarDescarga(this.configuracionAtenti.getUrlImagenInicio(), "Descargando imagen Home" );
     }
 
-    private void encolarDescargaImagenFin() {
+    private void encolarDescargaImagenFin() throws ExcepcionGeneral {
         this.idImagenHome = this.encolarDescarga(this.configuracionAtenti.getUrlImagenFin(), "Descargando imagen Fin");
     }
 
-    private void encolarDescargaImagen() {
+    private void encolarDescargaImagen() throws ExcepcionGeneral {
         if (this.configuracionAtenti.getUrlsImagen() != null && !this.configuracionAtenti.getUrlsImagen().isEmpty()) {
             this.tipoDescarga = TipoDescarga.IMAGEN;
             String proximaUrlADescargar = this.configuracionAtenti.getUrlsImagen().remove(0);
@@ -153,7 +148,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
         }
     }
 
-    private void encolarDescargaVideo() {
+    private void encolarDescargaVideo() throws ExcepcionGeneral {
         if (this.configuracionAtenti.getUrlsVideo() != null && !this.configuracionAtenti.getUrlsVideo().isEmpty()) {
             this.tipoDescarga = TipoDescarga.VIDEO;
             String proximaUrlADescargar = this.configuracionAtenti.getUrlsVideo().remove(0);
@@ -176,7 +171,8 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
                 if (esDescargaAtenti(id)) {
                     switch (CrazyTowerSplash.this.tipoDescarga) {
-                        case ARCHIVO_CONFIGURACION:
+                        case ARCHIVO_CONFIGURACION_DEFAULT:
+                        case ARCHIVO_CONFIGURACION_DISPOSITIVO:
                             procesarArchivoConfiguracion(id);
                             break;
                         case IMAGEN_HOME:
@@ -200,28 +196,40 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
     };
 
     private Cursor validarArchivoDescargado(Long id) throws ExcepcionGeneral {
-        DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-        DownloadManager.Query query = new DownloadManager.Query();
-        query.setFilterById(id);
-        Cursor cursor = downloadManager.query(query);
+        Cursor cursor = null;
+        boolean error = false;
 
-        // Si es vacio se corta la ejecucion y se loguea el error
-        if (!cursor.moveToFirst()) {
-            Log.w("DescargaArchivos", "Cursor vacio");
-            throw new ExcepcionGeneral("Cursor vacío");
+        try {
+            DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+            DownloadManager.Query query = new DownloadManager.Query();
+            query.setFilterById(id);
+            cursor = downloadManager.query(query);
+
+            // Si es vacio se corta la ejecucion y se loguea el error
+            if (!cursor.moveToFirst()) {
+                Log.w("DescargaArchivos", "Cursor vacio");
+                throw new ExcepcionGeneral("Cursor vacío");
+            }
+
+            int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            if (DownloadManager.STATUS_SUCCESSFUL != cursor.getInt(statusIndex)) {
+                Log.w("DescargaArchivos", "Download Failed");
+                throw new ExcepcionGeneral("Error al descargar el archivo");
+            }
+
+            return cursor;
+        } catch (Exception excepcionGeneral) {
+            error = true;
+            throw new ExcepcionGeneral(excepcionGeneral);
+        } finally {
+            if (error && cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
         }
-
-        int statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-        if (DownloadManager.STATUS_SUCCESSFUL != cursor.getInt(statusIndex)) {
-            Log.w("DescargaArchivos", "Download Failed");
-            throw new ExcepcionGeneral("Error al descargar el archivo");
-        }
-
-        return cursor;
     }
 
     private void finalizarDescarga(Cursor cursor) {
-        if (cursor != null) {
+        if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
     }
@@ -252,9 +260,17 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
             this.tipoDescarga = TipoDescarga.IMAGEN_HOME;
             this.encolarDescargaImagenHome();
-        } catch (ExcepcionGeneral excepcionGeneral) {
-            Toast.makeText(this, "Se produjo un error durante la descarga del archivo de configuracion", Toast.LENGTH_LONG);
-            this.encolarDescargaArchivoConfiguracionDefault();
+        } catch (Exception excepcionGeneral) {
+            Toast.makeText(this, "Se produjo un error durante la descarga del archivo de configuracion", Toast.LENGTH_LONG).show();
+
+            try {
+                if (TipoDescarga.ARCHIVO_CONFIGURACION_DISPOSITIVO.equals(tipoDescarga)) {
+                    tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION_DEFAULT;
+                    this.encolarDescargaArchivoConfiguracionDefault();
+                }
+            } catch (ExcepcionGeneral excepcionGeneral1) {
+                Log.e("EncargaApp", "procesarArchivoConfiguracion: No se pudo descargar en el archivo de configuracion por default", excepcionGeneral1);
+            }
         } finally {
             finalizarDescarga(cursor);
         }
@@ -272,7 +288,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
             this.tipoDescarga = TipoDescarga.IMAGEN_FIN;
             this.encolarDescargaImagenFin();
-        } catch (ExcepcionGeneral excepcionGeneral) {
+        } catch (Exception excepcionGeneral) {
             Toast.makeText(this, "Se produjo un error durante la descarga de la imagen de la home", Toast.LENGTH_LONG);
         } finally {
             finalizarDescarga(cursor);
@@ -290,7 +306,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
             this.archivosDescargadosAtenti.setPathImagenFin(urlImagenFin);
 
             this.encolarDescargaImagen();
-        } catch (ExcepcionGeneral excepcionGeneral) {
+        } catch (Exception excepcionGeneral) {
             Toast.makeText(this, "Se produjo un error durante la descarga de la imagen de fin", Toast.LENGTH_LONG);
         } finally {
             finalizarDescarga(cursor);
@@ -309,7 +325,7 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
             // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
             this.encolarDescargaImagen();
-        } catch (ExcepcionGeneral excepcionGeneral) {
+        } catch (Exception excepcionGeneral) {
             Toast.makeText(this, "Se produjo un error durante la descarga de una imagen de propaganda", Toast.LENGTH_LONG);
         } finally {
             finalizarDescarga(cursor);
@@ -328,29 +344,33 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
             // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
             this.encolarDescargaVideo();
-        } catch (ExcepcionGeneral excepcionGeneral) {
+        } catch (Exception excepcionGeneral) {
             excepcionGeneral.printStackTrace();
         } finally {
             finalizarDescarga(cursor);
         }
     }
 
-    private Long encolarDescarga(String url, String tituloDescarga) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+    private Long encolarDescarga(String url, String tituloDescarga) throws ExcepcionGeneral {
+        try {
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
 
-        String nombreArchivo = URLUtil.guessFileName(url, null, null);
-        request.setTitle(nombreArchivo);
-        request.setDescription("Descarga de contenido Atenti");
+            String nombreArchivo = URLUtil.guessFileName(url, null, null);
+            request.setTitle(nombreArchivo);
+            request.setDescription("Descarga de contenido Atenti");
 
-        request.setVisibleInDownloadsUi(false);
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+            request.setVisibleInDownloadsUi(false);
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
 
-        final DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-        final long idArchivoDescarga = downloadManager.enqueue(request);
+            final DownloadManager downloadManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+            final long idArchivoDescarga = downloadManager.enqueue(request);
 
-        this.definirBarraProgreso(downloadManager, idArchivoDescarga, tituloDescarga);
+            this.definirBarraProgreso(downloadManager, idArchivoDescarga, tituloDescarga);
 
-        return (idArchivoDescarga);
+            return (idArchivoDescarga);
+        } catch (Exception e) {
+            throw new ExcepcionGeneral(e);
+        }
     }
 
     private void definirBarraProgreso(final DownloadManager downloadManager, final long idArchivoDescarga, final String tituloDescarga) {
@@ -359,38 +379,49 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean downloading = true;
+                Cursor cursor = null;
 
-                while (downloading) {
-                    DownloadManager.Query q = new DownloadManager.Query();
-                    q.setFilterById(idArchivoDescarga);
+                try {
+                    boolean downloading = true;
 
-                    Cursor cursor = downloadManager.query(q);
-                    cursor.moveToFirst();
-                    int bytes_downloaded = cursor.getInt(cursor
-                            .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
-                    int bytes_total = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+                    while (downloading) {
+                        DownloadManager.Query q = new DownloadManager.Query();
+                        q.setFilterById(idArchivoDescarga);
 
-                    if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
-                        downloading = false;
-                    } else if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_FAILED) {
-                        if (idArchivoConfiguracion.equals(idArchivoDescarga)) {
+                        cursor = downloadManager.query(q);
+                        cursor.moveToFirst();
+
+                        if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_SUCCESSFUL) {
                             downloading = false;
-                            //encolarDescargaArchivoConfiguracionDefault();
+                        } else if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_FAILED) {
+                            if (idArchivoConfiguracion.equals(idArchivoDescarga)) {
+                                downloading = false;
+                                //encolarDescargaArchivoConfiguracionDefault();
+                            }
                         }
+
+                        int bytesDownloaded = cursor.getInt(cursor
+                                .getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+                        int bytesTotal = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+
+                        final int progresoDescarga = bytesTotal != 0? (int) ((bytesDownloaded * 100l) / bytesTotal) : 0;
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                CrazyTowerSplash.this.barraProgreso.setProgress(progresoDescarga);
+                                CrazyTowerSplash.this.barraProgreso.setText(Integer.valueOf(progresoDescarga).toString());
+                            }
+                        });
+
+                        cursor.close();
                     }
-
-                    final int progresoDescarga = (int) ((bytes_downloaded * 100l) / bytes_total);
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            CrazyTowerSplash.this.barraProgreso.setProgress(progresoDescarga);
-                            CrazyTowerSplash.this.barraProgreso.setText(Integer.valueOf(progresoDescarga).toString());
-                        }
-                    });
-
-                    cursor.close();
+                } catch (Exception e) {
+                    Log.e("EncargaApp", "ERROR: ", e);
+                } finally {
+                    if (cursor != null && !cursor.isClosed()) {
+                        cursor.close();
+                    }
                 }
             }
         }).start();
