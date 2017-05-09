@@ -14,4 +14,9 @@
     <string name="encuestaBotonAtras">&lt;</string>
     <string name="title_activity_actividad_servicios">ActividadServicios</string>
 
+    <string name="device_admin_description">Descripción</string>
+    <string name="device_admin">Descripción</string>
+    <string name="title_activity_actividad_espera_device_owner">ActividadEsperaDeviceOwner</string>
+    <string name="esperando_device_owner_texto">Esperando device owner...</string>
+
 </resources>

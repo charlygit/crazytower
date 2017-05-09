@@ -1,8 +1,13 @@
 package software.cm.crazytower.helpers;
 
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import software.cm.crazytower.componentes.receivers.AdminReceiver;
+import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.modelo.Nodo;
 
 public class APManager {
@@ -133,6 +140,49 @@ public class APManager {
 
         return false;
     }
+
+    public static boolean estaAplicacionEnModoPinned(Context context) {
+        ActivityManager activityManager;
+
+        activityManager = (ActivityManager)
+                context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // For SDK version 23 and above.
+            return activityManager.getLockTaskModeState()
+                    != ActivityManager.LOCK_TASK_MODE_NONE;
+        }
+
+        return false;
+    }
+
+    public static boolean esAplicacionDeviceOwner(Context context) {
+        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        return dpm.isDeviceOwnerApp(context.getPackageName());
+    }
+
+    public static boolean esAplicacionDeviceOwner(Context context, String packageName) {
+        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        return dpm.isDeviceOwnerApp("software.cm.crazytower");
+    }
+
+    public static void convertirAppModoAdmin(Context context, String packageName) throws ExcepcionGeneral {
+        DevicePolicyManager dpm = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+
+        if (esAplicacionDeviceOwner(context)) {
+            ComponentName deviceAdmin = new ComponentName(context, AdminReceiver.class);
+            dpm.setLockTaskPackages(deviceAdmin, new String[] { "software.cm.crazytower", "software.cm.crazytower.actividades" });
+        } else {
+            throw new ExcepcionGeneral("La aplicación no es Device Owner");
+        }
+
+        if (!APManager.estaAplicacionEnModoPinned(context)) {
+            ((Activity) context).startLockTask();
+        }
+    }
+
     /*//check whether wifi hotspot on or off
     public static boolean isApOn(Context context) {
         WifiManager wifimanager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);

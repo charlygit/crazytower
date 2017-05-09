@@ -24,7 +24,6 @@ import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeImagen;
 import software.cm.crazytower.componentes.fragmentos.home.FragmentoHomeVideo;
-import software.cm.crazytower.servicios.ServicioMonitoreoConexiones;
 
 public class CrazyTowerHome extends ActividadBaseEncarga {
     private BroadcastReceiverConexionSerial broadcastReceiverConexionSerial;

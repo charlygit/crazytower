@@ -10,9 +10,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.MANAGE_DEVICE_ADMINS" />
 
     <application
         android:name=".aplicacion.AplicacionEncarga"
@@ -28,7 +28,6 @@
             android:name=".servicios.ServicioMonitoreoConexiones"
             android:enabled="true"
             android:exported="true" />
-
         <service
             android:name=".servicios.ServicioBluetooth"
             android:enabled="true"
@@ -38,20 +37,24 @@
         <!-- SPLASH -->
         <!-- ****** -->
         <activity
-        android:name=".actividades.CrazyTowerSplash"
-        android:label="@string/app_name"
-        android:configChanges="orientation|screenSize"
-        android:screenOrientation="sensorLandscape">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:name=".actividades.CrazyTowerSplash"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="sensorLandscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-
-        <activity
-            android:name=".actividades.ActividadBaseEncarga">
+                <category android:name="android.intent.category.LAUNCHER" />
+                <!--
+            <category android:name="android.intent.category.HOME" />
+            <category android:name="android.intent.category.DEFAULT" />
+                -->
+            </intent-filter>
         </activity>
+        <activity android:name=".actividades.ActividadBaseEncarga"></activity>
+
+        <activity android:name=".actividades.ActividadEsperaDeviceOwner"
+            android:screenOrientation="sensorLandscape"/>
 
         <!-- **** -->
         <!-- HOME -->
@@ -84,6 +87,20 @@
             android:name=".actividades.ActividadServicios"
             android:label="@string/title_activity_actividad_servicios"
             android:screenOrientation="sensorLandscape" />
+
+        <receiver
+            android:name=".componentes.receivers.AdminReceiver"
+            android:description="@string/device_admin_description"
+            android:label="@string/device_admin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

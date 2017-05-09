@@ -1,7 +1,9 @@
 package software.cm.crazytower.actividades;
 
 import android.app.DownloadManager;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -20,10 +22,11 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import software.cm.crazytower.componentes.receivers.AdminReceiver;
 import software.cm.crazytower.R;
-import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.TextProgressBar;
 import software.cm.crazytower.errores.ExcepcionGeneral;
+import software.cm.crazytower.helpers.APManager;
 import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.helpers.UtilidadesAndroid;
 import software.cm.crazytower.helpers.UtilidadesArchivo;
@@ -54,8 +57,19 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
         setContentView(R.layout.activity_crazytower_splash);
+
+        if (!APManager.esAplicacionDeviceOwner(this, AdminReceiver.class.getPackage().getName())) {
+            Intent mainIntent = new Intent(this, ActividadEsperaDeviceOwner.class);
+            startActivity(mainIntent);
+            finish();
+        } else {
+            try {
+                APManager.convertirAppModoAdmin(this, "");
+            } catch (ExcepcionGeneral excepcionGeneral) {
+                excepcionGeneral.printStackTrace();
+            }
+        }
 
         this.barraProgreso = (TextProgressBar) findViewById(R.id.barraProgreso);
         this.barraProgreso.setMax(100);
@@ -67,26 +81,9 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
         } catch (ExcepcionGeneral excepcionGeneral) {
             Log.e("EncargaApp", "onCreate: No se pudo descargar el archivo de configuracion", excepcionGeneral);
         }
-        /*DescargadorImagenes descargadorImagenes = new DescargadorImagenes(barraProgreso);
-        descargadorImagenes.execute(this.urlsDescarga);*/
 
         this.registerReceiver(descargaCompletaBroadcastReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
-
-        /*this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
-        IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
-
-        registerReceiver(this.broadcastReceiverConexionSerial, filter);*/
-        /*new Handler().postDelayed(new Runnable(){
-            @Override
-            public void run() {
-                *//* Create an Intent that will start the Menu-Activity. *//*
-                Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
-                CrazyTowerSplash.this.startActivity(mainIntent);
-                CrazyTowerSplash.this.finish();
-            }
-        }, SPLASH_DISPLAY_LENGTH);*/
-        //this.descargarArchivos();
     }
 
     private boolean esDescargaAtenti(Long idArchivo) {
