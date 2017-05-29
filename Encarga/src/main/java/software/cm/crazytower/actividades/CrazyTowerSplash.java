@@ -1,9 +1,7 @@
 package software.cm.crazytower.actividades;
 
 import android.app.DownloadManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -22,11 +20,13 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import software.cm.crazytower.actividades.drive.ActividadCrearDirectorioEncuesta;
 import software.cm.crazytower.componentes.receivers.AdminReceiver;
 import software.cm.crazytower.R;
 import software.cm.crazytower.componentes.TextProgressBar;
 import software.cm.crazytower.errores.ExcepcionGeneral;
 import software.cm.crazytower.helpers.APManager;
+import software.cm.crazytower.helpers.AccionSistemaSMS;
 import software.cm.crazytower.helpers.Constantes;
 import software.cm.crazytower.helpers.UtilidadesAndroid;
 import software.cm.crazytower.helpers.UtilidadesArchivo;
@@ -34,14 +34,17 @@ import software.cm.crazytower.helpers.UtilidadesInternet;
 import software.cm.crazytower.helpers.UtilidadesString;
 import software.cm.crazytower.modelo.ConfiguracionAtenti;
 
-public class CrazyTowerSplash extends ActividadBaseEncarga {
+public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
+    public static final String PARAM_ACCION_SMS = "ACCION_SMS";
+
     private enum TipoDescarga {ARCHIVO_CONFIGURACION_DISPOSITIVO, ARCHIVO_CONFIGURACION_DEFAULT, IMAGEN_HOME, IMAGEN_FIN, IMAGEN, VIDEO, OTROS};
     private static final String PLACEHOLDER_ID_DISPOSITIVO = "ID_DISPOSITIVO";
     private static final String URL_BASE_ENCARGA = "http://www.web-coffee.net/otrasWeb/encarga/";
     private static final String URL_ARCHIVO_CONFIGURACION = URL_BASE_ENCARGA + PLACEHOLDER_ID_DISPOSITIVO + "/configuracionDispositivo.json";
     private static final String URL_DISPOSITIVOS = URL_BASE_ENCARGA + "dispositivos.txt";
 
-    private static TipoDescarga tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION_DISPOSITIVO;
+    private String idDispositivo;
+    private static TipoDescarga tipoDescarga;
 
     private TextProgressBar barraProgreso;
     private TextView labelDescarga;
@@ -59,17 +62,9 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
         super.onCreate(icicle);
         setContentView(R.layout.activity_crazytower_splash);
 
-        if (!APManager.esAplicacionDeviceOwner(this, AdminReceiver.class.getPackage().getName())) {
-            Intent mainIntent = new Intent(this, ActividadEsperaDeviceOwner.class);
-            startActivity(mainIntent);
-            finish();
-        } else {
-            try {
-                APManager.convertirAppModoAdmin(this, "");
-            } catch (ExcepcionGeneral excepcionGeneral) {
-                excepcionGeneral.printStackTrace();
-            }
-        }
+        tipoDescarga = TipoDescarga.ARCHIVO_CONFIGURACION_DISPOSITIVO;
+
+        this.chequearEstadoBloqueos();
 
         this.barraProgreso = (TextProgressBar) findViewById(R.id.barraProgreso);
         this.barraProgreso.setMax(100);
@@ -84,6 +79,38 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
 
         this.registerReceiver(descargaCompletaBroadcastReceiver,
                 new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    private void chequearEstadoBloqueos() {
+        Bundle extras = getIntent().getExtras();
+        boolean hayAccionSMS = extras != null && extras.containsKey(PARAM_ACCION_SMS);
+
+        if (!hayAccionSMS) {
+            if (!APManager.esAplicacionDeviceOwner(this, AdminReceiver.class.getPackage().getName())) {
+                Intent mainIntent = new Intent(this, ActividadEsperaDeviceOwner.class);
+                startActivity(mainIntent);
+                finish();
+            } else {
+                try {
+                    APManager.convertirAppModoAdmin(this, "");
+                } catch (ExcepcionGeneral excepcionGeneral) {
+                    excepcionGeneral.printStackTrace();
+                }
+            }
+        } else {
+            AccionSistemaSMS accionSistemaSMS = AccionSistemaSMS.valueOf(extras.getString(PARAM_ACCION_SMS));
+
+            if (AccionSistemaSMS.BLOQUEAR.equals(accionSistemaSMS)) {
+                startLockTask();
+            } else {
+                stopLockTask();
+            }
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private boolean esDescargaAtenti(Long idArchivo) {
@@ -115,8 +142,8 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
     }
 
     private void encolarDescargaArchivoConfiguracion() throws ExcepcionGeneral {
-        String idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
-        Toast.makeText(getApplicationContext(), idDispositivo, Toast.LENGTH_LONG);
+        this.idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
+        Toast.makeText(getApplicationContext(), this.idDispositivo, Toast.LENGTH_LONG);
 
         this.idArchivoConfiguracion = this.encolarDescarga(
                 URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, idDispositivo), "Descargando archivo de configuración");
@@ -254,6 +281,8 @@ public class CrazyTowerSplash extends ActividadBaseEncarga {
                 Toast.makeText(this, "Se necesita al menos una imagen o video de propaganda para el funcionamiento del sistema", Toast.LENGTH_LONG);
                 return;
             }
+
+            this.configuracionAtenti.setIdDispositivo(this.idDispositivo);
 
             this.tipoDescarga = TipoDescarga.IMAGEN_HOME;
             this.encolarDescargaImagenHome();

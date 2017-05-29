@@ -4,6 +4,7 @@ import java.util.List;
 
 
 public class ConfiguracionAtenti {
+    private String idDispositivo;
     private List<String> urlsVideo;
     private List<String> urlsImagen;
     private String urlImagenInicio;
@@ -43,5 +44,13 @@ public class ConfiguracionAtenti {
     public ConfiguracionAtenti setUrlImagenFin(String urlImagenFin) {
         this.urlImagenFin = urlImagenFin;
         return this;
+    }
+
+    public String getIdDispositivo() {
+        return idDispositivo;
+    }
+
+    public void setIdDispositivo(String idDispositivo) {
+        this.idDispositivo = idDispositivo;
     }
 }
