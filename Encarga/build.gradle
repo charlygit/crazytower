@@ -1,26 +1,39 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        FirmaEncarga {
+            keyAlias 'encarga'
+            keyPassword 'password'
+            storeFile file('/home/charly/Workspace/AndroidKeystore/androidDebugKeystore.jks')
+            storePassword 'password'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
-
     defaultConfig {
         applicationId "software.cm.crazytower"
         minSdkVersion 21
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.FirmaEncarga
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.FirmaEncarga
+        }
+    }
+    productFlavors {
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.gms:play-services-drive:10.2.6'
     compile 'com.google.android.gms:play-services-auth:10.2.6'
     compile 'com.android.support:appcompat-v7:23.4.0'

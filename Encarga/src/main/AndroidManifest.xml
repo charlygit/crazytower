@@ -87,6 +87,13 @@
             android:label="@string/title_activity_actividad_servicios"
             android:screenOrientation="sensorLandscape" />
 
+
+        <!-- ***** -->
+        <!-- DRIVE -->
+        <!-- ***** -->
+        <activity
+            android:name=".actividades.drive.ActividadCrearDirectorioEncuesta" />
+
         <receiver
             android:name=".componentes.receivers.AdminReceiver"
             android:description="@string/device_admin_description"

@@ -120,6 +120,7 @@ public abstract class FragmentoEncuesta extends Fragment  {
 
     public void enviarAccionBotonApretado(Button botonApretado) {
         if (this.fragmentoEncuestaOpcionListener != null) {
+            this.fragmentoEncuestaOpcionListener.procesarRespuesta(this.obtenerTitulo(), botonApretado.getText().toString());
             this.fragmentoEncuestaOpcionListener.ejecutarSeleccionOpcion(botonApretado);
         }
     }

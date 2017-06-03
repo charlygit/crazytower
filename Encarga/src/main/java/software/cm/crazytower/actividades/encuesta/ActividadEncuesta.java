@@ -18,7 +18,7 @@ import software.cm.crazytower.componentes.BroadcastReceiverConexionSerial;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuesta;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaInicio;
 import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoEncuestaOpcionesDinamicas;
-import software.cm.crazytower.componentes.fragmentos.encuesta.FragmentoImagenSlider;
+import software.cm.crazytower.modelo.encuesta.ResultadoEncuesta;
 
 public class ActividadEncuesta extends ActividadBaseEncarga implements FragmentoEncuestaOpcionListener {
     private static final int CANT_PAGINAS = 5;
@@ -31,6 +31,8 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
     // Botones adelante y atras
     private Button botonAdelante;
     private Button botonAtras;
+
+    private ResultadoEncuesta resultadoEncuesta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,18 +55,12 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
 
         this.maximaPaginaVisitada = 0;
 
-        // Inicia y registra arduino broadcast receiver
-        /*this.broadcastReceiverConexionSerial = new BroadcastReceiverConexionSerial();
-        IntentFilter filter = ControladorArduino.crearFiltroArduinoBroadcastReceiver();
-
-        registerReceiver(this.broadcastReceiverConexionSerial, filter);*/
+        this.resultadoEncuesta = new ResultadoEncuesta();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        //unregisterReceiver(this.broadcastReceiverConexionSerial);
     }
 
     @Override
@@ -79,6 +75,7 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
         }
     }
 
+    // Implementacion de FragmentoEncuestaOpcionListener
     @Override
     public void ejecutarSeleccionOpcion(Button botonApretado) {
         if (this.mPaginador.getCurrentItem() < (CANT_PAGINAS - 1)) {
@@ -86,10 +83,15 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
         } else {
             // Se finaliza la accion de encuesta y se pasa a la accion que brinda servicios
             Intent mainIntent = new Intent(ActividadEncuesta.this, ActividadServicios.class);
+            mainIntent.putExtra(ActividadBaseEncarga.PARAM_RESULTADO_ENCUESTA, this.resultadoEncuesta);
             this.cambiarActividadAtenti(mainIntent);
         }
     }
 
+    @Override
+    public void procesarRespuesta(String pregunta, String respuesta) {
+        this.resultadoEncuesta.procesarRespuesta(pregunta, respuesta);
+    }
 
     private class EncuestaOnPageChangeListener implements ViewPager.OnPageChangeListener {
         @Override
@@ -118,14 +120,14 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
 
         @Override
         public Fragment getItem(int position) {
-            FragmentoEncuesta fragmento;
+            FragmentoEncuesta fragmento = null;
 
             if (position == 0) {
                 fragmento = new FragmentoEncuestaInicio();
 
                 Bundle argumentos = new Bundle();
                 argumentos.putString(FragmentoEncuestaInicio.PARAM_IMAGEN,
-                        ActividadEncuesta.this.archivosDescargadosAtenti.getPathImagenHome());
+                        ActividadEncuesta.this.datosAplicacionAtenti.getPathImagenHome());
 
                 fragmento.setArguments(argumentos);
             } else if (position == 1) {
@@ -183,13 +185,13 @@ public class ActividadEncuesta extends ActividadBaseEncarga implements Fragmento
                 argumentos.putString(FragmentoEncuesta.getNombreParametroOpcion(4), "Saucony");
 
                 fragmento.setArguments(argumentos);
-            } else {
+            } /*else {
                 fragmento = new FragmentoImagenSlider();
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("nroPagina", position);
                 fragmento.setArguments(bundle);
-            }
+            }*/
 
             // Se define el listener del fragmento, para capturar los touch en los botones
             fragmento.setFragmentoEncuestaOpcionListener(ActividadEncuesta.this);

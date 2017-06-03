@@ -40,14 +40,11 @@ public class ServicioBluetooth extends Service {
         super.onCreate();
 
         new Handler().postDelayed(new ConexionBluetooth(), 1000L);
-
-        Toast.makeText(this, "ServicioBluetooth - onCreate", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this, "ServicioBluetooth - onDestroy", Toast.LENGTH_LONG).show();
     }
 
     // ---------------------------------

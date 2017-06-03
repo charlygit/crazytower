@@ -21,11 +21,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import software.cm.crazytower.R;
+import software.cm.crazytower.actividades.drive.ActividadCrearArchivoEncuesta;
 import software.cm.crazytower.arduino.ControladorArduino;
 import software.cm.crazytower.helpers.APManager;
 import software.cm.crazytower.servicios.ServicioBluetooth;
 
-public class ActividadServicios extends ActividadBaseEncarga {
+public class ActividadServicios extends ActividadCrearArchivoEncuesta {
     private static final Long TIEMPO_VUELTA_HOME = 1000L * 60L;
     private static final String ACCION_CAMBIO_ESTADO_ANCLAJE_RED = "android.net.wifi.WIFI_AP_STATE_CHANGED";
     private static final String ACCION_CAMBIO_ANCLAJE_RED = "android.net.conn.TETHER_STATE_CHANGED";

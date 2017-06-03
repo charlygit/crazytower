@@ -43,7 +43,6 @@ public class ServicioMonitoreoConexiones extends Service {
             this.enEjecucion = true;
         }
 
-        Toast.makeText(this, "Se iniciar el servicio de conexiones", Toast.LENGTH_LONG).show();
         return super.onStartCommand(intent, flags, startId);
     }
 

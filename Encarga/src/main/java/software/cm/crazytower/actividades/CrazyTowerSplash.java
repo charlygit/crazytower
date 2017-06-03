@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.webkit.URLUtil;
 import android.widget.TextView;
@@ -43,7 +44,6 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
     private static final String URL_ARCHIVO_CONFIGURACION = URL_BASE_ENCARGA + PLACEHOLDER_ID_DISPOSITIVO + "/configuracionDispositivo.json";
     private static final String URL_DISPOSITIVOS = URL_BASE_ENCARGA + "dispositivos.txt";
 
-    private String idDispositivo;
     private static TipoDescarga tipoDescarga;
 
     private TextProgressBar barraProgreso;
@@ -142,11 +142,9 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
     }
 
     private void encolarDescargaArchivoConfiguracion() throws ExcepcionGeneral {
-        this.idDispositivo = UtilidadesAndroid.obtenerIdentificadorDispositivo(this);
-        Toast.makeText(getApplicationContext(), this.idDispositivo, Toast.LENGTH_LONG);
-
         this.idArchivoConfiguracion = this.encolarDescarga(
-                URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, idDispositivo), "Descargando archivo de configuración");
+                URL_ARCHIVO_CONFIGURACION.replace(PLACEHOLDER_ID_DISPOSITIVO, this.datosAplicacionAtenti.getIdDispositivo()),
+                "Descargando archivo de configuración");
     }
 
     private void encolarDescargaArchivoConfiguracionDefault() throws ExcepcionGeneral {
@@ -183,9 +181,35 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
     }
 
     private void irAEncuesta() {
-        Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
-        this.cambiarActividadAtenti(mainIntent);
+        this.datosAplicacionAtenti.setDriveId(this.getIdDirectorio());
+        handler.post(runnable);
     }
+
+    private Handler handler = new Handler();
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (CrazyTowerSplash.this.isExisteDirectorio()) {
+                Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
+                CrazyTowerSplash.this.cambiarActividadAtenti(mainIntent);
+            } else {
+                Toast.makeText(
+                        CrazyTowerSplash.this,
+                        "Aun no existe el directorio para guardar las encuestas",
+                        Toast.LENGTH_LONG).show();
+                handler.postDelayed(this, 5000);
+            }
+        }
+    };
+
+    Runnable irAEncuesta = new Runnable() {
+        @Override
+        public void run() {
+            Intent mainIntent = new Intent(CrazyTowerSplash.this, CrazyTowerHome.class);
+            CrazyTowerSplash.this.cambiarActividadAtenti(mainIntent);
+        }
+    };
 
     private BroadcastReceiver descargaCompletaBroadcastReceiver = new BroadcastReceiver() {
         @Override
@@ -282,7 +306,6 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
                 return;
             }
 
-            this.configuracionAtenti.setIdDispositivo(this.idDispositivo);
 
             this.tipoDescarga = TipoDescarga.IMAGEN_HOME;
             this.encolarDescargaImagenHome();
@@ -310,7 +333,7 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
 
             int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
             String urlImagenHome = cursor.getString(uriIndex);
-            this.archivosDescargadosAtenti.setPathImagenHome(urlImagenHome);
+            this.datosAplicacionAtenti.setPathImagenHome(urlImagenHome);
 
             this.tipoDescarga = TipoDescarga.IMAGEN_FIN;
             this.encolarDescargaImagenFin();
@@ -329,7 +352,7 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
 
             int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
             String urlImagenFin = cursor.getString(uriIndex);
-            this.archivosDescargadosAtenti.setPathImagenFin(urlImagenFin);
+            this.datosAplicacionAtenti.setPathImagenFin(urlImagenFin);
 
             this.encolarDescargaImagen();
         } catch (Exception excepcionGeneral) {
@@ -347,7 +370,7 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
 
             int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
             String urlPathImagen = cursor.getString(uriIndex);
-            this.archivosDescargadosAtenti.agregarPathImagen(urlPathImagen);
+            this.datosAplicacionAtenti.agregarPathImagen(urlPathImagen);
 
             // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
             this.encolarDescargaImagen();
@@ -366,7 +389,7 @@ public class CrazyTowerSplash extends ActividadCrearDirectorioEncuesta {
 
             int uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
             String urlVideo = cursor.getString(uriIndex);
-            this.archivosDescargadosAtenti.agregarPathVideo(urlVideo);
+            this.datosAplicacionAtenti.agregarPathVideo(urlVideo);
 
             // Se finazalió una descarga y se inicia la siguiente (si es que hay otra)
             this.encolarDescargaVideo();

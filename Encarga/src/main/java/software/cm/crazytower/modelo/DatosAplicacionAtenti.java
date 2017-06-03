@@ -3,31 +3,40 @@ package software.cm.crazytower.modelo;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.drive.DriveId;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArchivosDescargadosAtenti implements Parcelable {
+public class DatosAplicacionAtenti implements Parcelable {
+    private String idDispositivo;
     private String pathImagenHome;
     private String pathImagenFin;
     private List<String> pathVideos = new ArrayList<>();
     private List<String> pathImagenes = new ArrayList<>();
 
-    public ArchivosDescargadosAtenti() {
+    private DriveId driveId;
+
+    public DatosAplicacionAtenti() {
     }
 
-    protected ArchivosDescargadosAtenti(Parcel in) {
+    protected DatosAplicacionAtenti(Parcel in) {
+        idDispositivo = in.readString();
         pathImagenHome = in.readString();
         pathImagenFin = in.readString();
         pathVideos = in.createStringArrayList();
         pathImagenes = in.createStringArrayList();
+        driveId = in.readParcelable(DriveId.class.getClassLoader());
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(idDispositivo);
         dest.writeString(pathImagenHome);
         dest.writeString(pathImagenFin);
         dest.writeStringList(pathVideos);
         dest.writeStringList(pathImagenes);
+        dest.writeParcelable(driveId, flags);
     }
 
     @Override
@@ -35,15 +44,15 @@ public class ArchivosDescargadosAtenti implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ArchivosDescargadosAtenti> CREATOR = new Creator<ArchivosDescargadosAtenti>() {
+    public static final Creator<DatosAplicacionAtenti> CREATOR = new Creator<DatosAplicacionAtenti>() {
         @Override
-        public ArchivosDescargadosAtenti createFromParcel(Parcel in) {
-            return new ArchivosDescargadosAtenti(in);
+        public DatosAplicacionAtenti createFromParcel(Parcel in) {
+            return new DatosAplicacionAtenti(in);
         }
 
         @Override
-        public ArchivosDescargadosAtenti[] newArray(int size) {
-            return new ArchivosDescargadosAtenti[size];
+        public DatosAplicacionAtenti[] newArray(int size) {
+            return new DatosAplicacionAtenti[size];
         }
     };
 
@@ -59,7 +68,7 @@ public class ArchivosDescargadosAtenti implements Parcelable {
         return pathImagenHome;
     }
 
-    public ArchivosDescargadosAtenti setPathImagenHome(String pathImagenHome) {
+    public DatosAplicacionAtenti setPathImagenHome(String pathImagenHome) {
         this.pathImagenHome = pathImagenHome;
         return this;
     }
@@ -68,7 +77,7 @@ public class ArchivosDescargadosAtenti implements Parcelable {
         return pathImagenFin;
     }
 
-    public ArchivosDescargadosAtenti setPathImagenFin(String pathImagenFin) {
+    public DatosAplicacionAtenti setPathImagenFin(String pathImagenFin) {
         this.pathImagenFin = pathImagenFin;
         return this;
     }
@@ -77,7 +86,7 @@ public class ArchivosDescargadosAtenti implements Parcelable {
         return pathVideos;
     }
 
-    public ArchivosDescargadosAtenti setPathVideos(List<String> pathVideos) {
+    public DatosAplicacionAtenti setPathVideos(List<String> pathVideos) {
         this.pathVideos = pathVideos;
         return this;
     }
@@ -86,8 +95,25 @@ public class ArchivosDescargadosAtenti implements Parcelable {
         return pathImagenes;
     }
 
-    public ArchivosDescargadosAtenti setPathImagenes(List<String> pathImagenes) {
+    public DatosAplicacionAtenti setPathImagenes(List<String> pathImagenes) {
         this.pathImagenes = pathImagenes;
+        return this;
+    }
+
+    public String getIdDispositivo() {
+        return idDispositivo;
+    }
+
+    public void setIdDispositivo(String idDispositivo) {
+        this.idDispositivo = idDispositivo;
+    }
+
+    public DriveId getDriveId() {
+        return driveId;
+    }
+
+    public DatosAplicacionAtenti setDriveId(DriveId driveId) {
+        this.driveId = driveId;
         return this;
     }
 }

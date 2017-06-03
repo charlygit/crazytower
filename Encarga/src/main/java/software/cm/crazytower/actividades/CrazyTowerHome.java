@@ -36,8 +36,8 @@ public class CrazyTowerHome extends ActividadBaseEncarga {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.cantPaginas = this.archivosDescargadosAtenti.getPathImagenes().size() +
-                this.archivosDescargadosAtenti.getPathVideos().size();
+        this.cantPaginas = this.datosAplicacionAtenti.getPathImagenes().size() +
+                this.datosAplicacionAtenti.getPathVideos().size();
 
         setContentView(R.layout.activity_crazytower_homescreen);
 
@@ -134,24 +134,24 @@ public class CrazyTowerHome extends ActividadBaseEncarga {
         @Override
         public Fragment getItem(int position) {
             // Si no hay imagenes, solo se muestran videos (tiene que haber al menos uno)
-            if (CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().isEmpty()) {
+            if (CrazyTowerHome.this.datosAplicacionAtenti.getPathImagenes().isEmpty()) {
                 return this.crearFragmentoVideo(
-                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().get(position));
+                        CrazyTowerHome.this.datosAplicacionAtenti.getPathVideos().get(position));
             }
 
             // Si no hay videos, solo se muestran imagenes (tiene que haber al menos una)
-            if (CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().isEmpty()) {
+            if (CrazyTowerHome.this.datosAplicacionAtenti.getPathVideos().isEmpty()) {
                 return this.crearFragmentoImagen(
-                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().get(position));
+                        CrazyTowerHome.this.datosAplicacionAtenti.getPathImagenes().get(position));
             }
 
             boolean esImagen = position % 2 == 0;
             if (esImagen) {
                 return this.crearFragmentoImagen(
-                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathImagenes().get(position / 2));
+                        CrazyTowerHome.this.datosAplicacionAtenti.getPathImagenes().get(position / 2));
             } else {
                 return this.crearFragmentoVideo(
-                        CrazyTowerHome.this.archivosDescargadosAtenti.getPathVideos().get(position/2));
+                        CrazyTowerHome.this.datosAplicacionAtenti.getPathVideos().get(position/2));
             }
         }
 
