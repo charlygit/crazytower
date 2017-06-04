@@ -69,6 +69,7 @@ public class ActividadCrearArchivoEncuesta extends ActividadGoogleDriveBase {
                         try {
                             writer.write(new GsonBuilder().create().toJson(ActividadCrearArchivoEncuesta.this.resultadoEncuesta));
                             writer.close();
+                            //
                         } catch (IOException e) {
                             Log.e(TAG, e.getMessage());
                         }
