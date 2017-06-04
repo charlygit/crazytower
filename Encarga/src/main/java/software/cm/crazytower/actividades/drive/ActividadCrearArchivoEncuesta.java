@@ -75,7 +75,7 @@ public class ActividadCrearArchivoEncuesta extends ActividadGoogleDriveBase {
 
                         MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
                                 .setTitle(System.currentTimeMillis() + "")
-                                .setMimeType("text/plain")
+                                .setMimeType("application/json")
                                 .setStarred(true).build();
 
                         // create a file on root folder
